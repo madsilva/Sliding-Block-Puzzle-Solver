@@ -21,6 +21,3 @@ dist/
 nbdist/
 .nb-gradle/
 
-
-nbproject/
-manifest.mf
