@@ -6,9 +6,16 @@ public class Solver {
     // args[0] is the filename of the initial puzzle configuration
     // args[1] is the filename of the goal	
     public static void main(String[] args) {
+        
+        
         try {
             BufferedReader in1 = new BufferedReader(new FileReader(args[0]));
             String line = in1.readLine();
+            if (line != null) {
+                
+                Tray game = new Tray(Integer.parseInt(line.substring(0,1)), Integer.parseInt(line.substring(2,3))); // bad casts???
+            }
+            
             while (line != null) {
                 System.out.println(line);
                 line = in1.readLine();
@@ -24,7 +31,7 @@ public class Solver {
             in2.close();
         }
         catch (IOException e) { // is this the right exception?
-            System.out.println("aaa");
+            System.out.println("aaa"); // change this
         }
         
         
