@@ -12,9 +12,17 @@ import java.util.LinkedList;
 // maybe make a solution tray and check if all the spaces filled in that tray are filled in the game tray
 // then if thats true, check if the blocks match
 
+// how should we store goal files?
+// maybe: store goal within each tray and call tray.checkgoal to see if goal has been met
+// should we just make them their own trays?
+
 // tray grid keeps track of what space is free with 0s and 1s
 // block objects keep track of their own areas/coords
-// when trying to make a move, iterate thru the list of blocks and see what can be moved
+// when trying to make a move, iterate thru the list of blocks and see what can be 
+
+/* Steps for finding moves? 
+Implement block.canMove() - keeps a boolean val for each block to indicate whether there is free space for it to move or not
+*/
 
 public class Tray {
     private int rows; // not sure if w and h should be variables
