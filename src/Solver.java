@@ -7,6 +7,8 @@ public class Solver {
     // args[1] is the filename of the goal	
     public static void main(String[] args) {
         
+        // implement option debugging messages?
+        
         // i really dont know whats supposed to be in try and what isnt
         try {
             BufferedReader in1 = new BufferedReader(new FileReader(args[0]));
@@ -18,7 +20,7 @@ public class Solver {
             }
             else {
                 System.out.println("invalid tray");
-                System.exit(0); // i dont know if this is right
+                System.exit(1);
             }
             line = in1.readLine();
             while (line != null) {
