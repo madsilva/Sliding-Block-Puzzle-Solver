@@ -6,17 +6,27 @@ import java.util.LinkedList;
  * @author madsilva
  * @author jgeati
  */
+
+// IDEA DUMP - type things you think of here
+// how the hell are we going to efficiently check solutions?
+// maybe make a solution tray and check if all the spaces filled in that tray are filled in the game tray
+// then if thats true, check if the blocks match
+
+// tray grid keeps track of what space is free with 0s and 1s
+// block objects keep track of their own areas/coords
+// when trying to make a move, iterate thru the list of blocks and see what can be moved
+
 public class Tray {
-    private int width; // not sure if w and h should be variables
-    private int height;
+    private int rows; // not sure if w and h should be variables
+    private int cols;
     private int[][] tray;
     private LinkedList<Block> blocks; // maybe could be arraylist
     
-    public Tray(int w, int h) {
-        width = w;
-        height = h;
+    public Tray(int r, int c) {
+        rows = r;
+        cols = c;
         // note that tray is already filled with 0s
-        tray = new int[w][h]; 
+        tray = new int[r][c]; 
         blocks = new LinkedList(); // maybe should be above
     }
     
@@ -24,7 +34,7 @@ public class Tray {
     // Returns true or false if the block was successfully added.
     // If new block overlaps with other blocks it will not be added.
     // If any of the given block values are invalid it will not be added.
-    // *Block data input: rows, columns, upper left row, upper left column
+    // *Block data input format: rows, columns, upper left row, upper left column
     public boolean addBlock(String line) {
         String [] vals = line.split(" ");
         // how to bulk convert string ary to int? this is so ugly
@@ -34,6 +44,7 @@ public class Tray {
         int colsPos = Integer.parseInt(vals[3]);
         // checking for valid values
         // other rules for validity?
+        // should this even be here?
         if (rows<=0 || cols<=0 || rowsPos<0 || colsPos<0) {
             return false;
         }
@@ -56,10 +67,6 @@ public class Tray {
         return true;
     }
     
-    // how the hell are we going to efficiently check solutions...
-    // maybe make a solution tray and check if all the spaces filled in that tray are filled in the game tray
-    // then if thats true, check if the blocks match
-    
     // im really not sure what this is actually supposed to do
     public boolean isOk(){
         System.out.println("Will always false");
@@ -67,26 +74,37 @@ public class Tray {
     }
     
     // this is prob a good idea for debugging
-    public String toString() {
-        return "";
+    public String printTray() {
+        String output = "Current game tray: \n";
+        
+        for (int r=0; r<rows;r++) {
+            for (int c=0; c<cols; c++) {
+                output += tray[r][c] + " ";
+            }
+            output += "\n";
+        }
+        
+        return output;
     }
     
-    // Move data input: 
+    // this will be harder because we should deliniate where each block is - not sure if its worth it
+    public String toString() {
+        String output = "";
+        
+        return output;
+    }
     
     // This method takes a Block b and a move array and checks the move against 
     // the current tray to see if it's valid.
+    // Move data input format: 
     private boolean checkMove(Block b, int[] move) {
         System.out.println("Will always false");
         return false;
     }
     
-    // idea
-    // tray grid keeps track of what space is free with 0s and 1s
-    // block objects keep track of their own areas/coords
-    // when trying to make a move, iterate thru the list of blocks and see what can be moved
-    
     private class Block {
         private int rows, cols, rowpos, colpos;
+        
         public Block(int r, int c, int rp, int cp) {
             rows = r;
             cols = c;
@@ -95,7 +113,7 @@ public class Tray {
         }
         
         // Im not sure which is best - setting row/col vals directly or adding to them to change them.
-        // i think once we implement more we'll find out.
+        // i think once we implement more we'll find out, but i wrote both methods.
         
         // note that r can be negative
         public void moveRow(int r) {

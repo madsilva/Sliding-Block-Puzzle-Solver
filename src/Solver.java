@@ -13,6 +13,7 @@ public class Solver {
             String line = in1.readLine();
             Tray game = null;
             if (line != null) {
+                System.out.println(line);
                 game = new Tray(Integer.parseInt(line.substring(0,1)), Integer.parseInt(line.substring(2)));
             }
             else {
@@ -21,10 +22,13 @@ public class Solver {
             }
             line = in1.readLine();
             while (line != null) {
+                System.out.println(line);
                 game.addBlock(line);
                 line = in1.readLine();
             }
             in1.close();
+            
+            System.out.println(game.printTray());
             
             BufferedReader in2 = new BufferedReader(new FileReader(args[1]));
             line = in2.readLine();
