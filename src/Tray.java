@@ -24,4 +24,9 @@ public class Tray {
     public void addBlock(String line) {
         
     }
+    
+    public boolean isOk(){
+        System.out.println("Will always false");
+        return false;
+    }
 }
