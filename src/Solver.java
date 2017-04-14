@@ -15,7 +15,6 @@ public class Solver {
             String line = in1.readLine();
             Tray game = null;
             if (line != null) {
-                System.out.println(line);
                 game = new Tray(Integer.parseInt(line.substring(0,1)), Integer.parseInt(line.substring(2)));
             }
             else {
@@ -24,7 +23,6 @@ public class Solver {
             }
             line = in1.readLine();
             while (line != null) {
-                System.out.println(line);
                 game.addBlock(line);
                 line = in1.readLine();
             }
@@ -35,10 +33,14 @@ public class Solver {
             BufferedReader in2 = new BufferedReader(new FileReader(args[1]));
             line = in2.readLine();
             while (line != null) {
-                System.out.println(line);
+                // do something here to put data into the goal
                 line = in2.readLine();
             }
             in2.close();
+            
+            // begin generating moves
+            // how in the world are we going to go about doing this
+            
         }
         catch (IOException e) { // is this the right exception?
             System.out.println("aaa"); // change this

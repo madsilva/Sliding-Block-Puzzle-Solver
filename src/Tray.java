@@ -21,7 +21,11 @@ import java.util.LinkedList;
 // when trying to make a move, iterate thru the list of blocks and see what can be 
 
 /* Steps for finding moves? 
-Implement block.canMove() - keeps a boolean val for each block to indicate whether there is free space for it to move or not
+Either: go thru list of blocks and check which ones have 0s adjacent, then check which one of those can actually be moved
+or look at where the 0s are in tray, and find the blocks that are adjacent to the 0s.
+once we find blocks that actually can be moved, pick randomly(?) which move to make next
+then execute the move and record it
+then check whether goal has been met
 */
 
 public class Tray {
@@ -29,6 +33,8 @@ public class Tray {
     private int cols;
     private int[][] tray;
     private LinkedList<Block> blocks; // maybe could be arraylist
+    // should we sort the blocks in some way?
+    // i dont know how but having the blocks be in random order seems like a terrible idea
     
     public Tray(int r, int c) {
         rows = r;
