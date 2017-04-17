@@ -1,5 +1,6 @@
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -89,8 +90,21 @@ public class Tray {
         return true;
     }
     
-    public boolean moveBlock() {
-        
+    // this is the method we would use if we went full encapsulation
+    // it returns a list of moves to solve the tray given a goal
+    // returns empty list if the tray is unsolvable
+    // Moves are represented as int arrays and are formatted:
+    // start row, start col, end row, end col
+    public ArrayList<int[]> solve(Tray goal) {
+        // while not solved or not shown impossible
+        // get possible moves
+        // make a move
+        // check if solved
+    }
+    
+    // should moveBlock be responsible for finding the block to be moved?
+    private boolean moveBlock(Block b, int[] move) {
+        return false;
     }
     
     // this method checks if the tray satisfies a given goal, ie the blocks in
@@ -115,6 +129,7 @@ public class Tray {
     }
 
     // this might be questionable...
+    // maybe blocks should be public
     public ArrayList<Block> getBlocks() {
         return blocks;
     }
@@ -199,6 +214,7 @@ public class Tray {
             }
         }
         
+        // validity checks?
         public void setRowPos(int r) {
             rowpos = r;
         }

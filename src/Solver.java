@@ -44,20 +44,22 @@ public class Solver {
             System.out.println(game.printTray());
             System.out.println(goal.printTray());
             
-            // begin generating moves
-            boolean solved = false;
-            ArrayList moves = new ArrayList();
-            while (!solved) {
-                
-                if (game.checkGoal(goal)) {
-                    solved = true;
+            
+            // make all this less ugly idk
+            if (game.checkGoal(goal)) {
+                // the goal matches the tray already
+            } 
+            else {
+                ArrayList<int[]> moves = game.solve(goal);
+                if (moves.isEmpty()) {
+                    System.out.println("impossible to solve");
                 }
                 else {
-                    // find valid moves
-                    // pick one
-                    // execute move
+                    for (int[] move : moves) {
+                        System.out.println(move[0] + " " + move[1] + " " + move[2] + " " + move[3]);
+                    }
                 }
-            } 
+            }
         }
         catch (IOException e) { // is this the right exception?
             System.out.println("invalid file");
