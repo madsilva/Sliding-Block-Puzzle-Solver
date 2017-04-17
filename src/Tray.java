@@ -1,5 +1,5 @@
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 /**
  *
@@ -20,6 +20,8 @@ import java.util.LinkedList;
 // block objects keep track of their own areas/coords
 // when trying to make a move, iterate thru the list of blocks and see what can be 
 
+// we HAVE to sort the blocks somehow. 
+
 /* Steps for finding moves? 
 Either: go thru list of blocks and check which ones have 0s adjacent, then check which one of those can actually be moved
 or look at where the 0s are in tray, and find the blocks that are adjacent to the 0s.
@@ -29,21 +31,27 @@ then check whether goal has been met
 */
 
 public class Tray {
-    private int rows; // not sure if w and h should be variables
+    private int rows;
     private int cols;
     private int[][] tray;
-    private LinkedList<Block> blocks; // maybe could be arraylist
-    // should we sort the blocks in some way?
-    // i dont know how but having the blocks be in random order seems like a terrible idea
+    private ArrayList<Block> blocks;
     
     public Tray(int r, int c) {
         rows = r;
         cols = c;
         // note that tray is already filled with 0s
         tray = new int[r][c]; 
-        blocks = new LinkedList(); // maybe should be above
+        blocks = new ArrayList();
     }
     
+    public int getRows() {
+        return rows;
+    }
+    
+    public int getCols() {
+        return cols;
+    }
+            
     // Takes a line of input* representing a block and adds it to the tray.
     // Returns true or false if the block was successfully added.
     // If new block overlaps with other blocks it will not be added.
@@ -81,6 +89,36 @@ public class Tray {
         return true;
     }
     
+    public boolean moveBlock() {
+        
+    }
+    
+    // this method checks if the tray satisfies a given goal, ie the blocks in
+    // the goal tray are in the correct configuration in the game tray
+    // this does NOT check if two trays are equal
+    public boolean checkGoal(Tray goal) {
+        // go thru this.blocks and then go thru goal and see if each block in goal matches a block in this
+        // how is this not going to run in n*m lmao
+        for (Block g : goal.getBlocks()) {
+            boolean found = false;
+            for (Block b : blocks) {
+                if (b.equals(g)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // this might be questionable...
+    public ArrayList<Block> getBlocks() {
+        return blocks;
+    }
+
     // im really not sure what this is actually supposed to do
     public boolean isOk(){
         System.out.println("Will always false");
@@ -124,6 +162,19 @@ public class Tray {
             cols = c;
             rowpos = rp;
             colpos = cp;
+        }
+        
+        @Override
+        // oh my god do we have to override hashcode if we do this
+        public boolean equals(Object obj) {
+            if (obj.getClass() != getClass() || obj==null) {
+                return false;
+            }
+            Block other = (Block)obj; // this is prob bad but i got it from stackexchange
+            if (rows==other.rows && cols==other.cols && rowpos==other.rowpos && colpos==other.colpos) {
+                return true;
+            }
+            return false;
         }
         
         // Im not sure which is best - setting row/col vals directly or adding to them to change them.
