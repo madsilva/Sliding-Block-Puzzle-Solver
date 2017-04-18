@@ -52,7 +52,10 @@ public class Solver {
             else {
                 ArrayList<int[]> moves = game.solve(goal);
                 if (moves.isEmpty()) {
-                    System.out.println("impossible to solve");
+                     System.out.println("impossible to solve");
+                    // exits the game if theres no solution
+                    // commented out because theres no solve method yet
+                    // System.exit(1);
                 }
                 else {
                     for (int[] move : moves) {
