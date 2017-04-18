@@ -100,10 +100,14 @@ public class Tray {
         // get possible moves
         // make a move
         // check if solved
+        
+        //just returns this for compiling reasons
+        return new ArrayList<>();
     }
     
     // should moveBlock be responsible for finding the block to be moved?
     private boolean moveBlock(Block b, int[] move) {
+        System.out.println("Will always false");
         return false;
     }
     
