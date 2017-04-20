@@ -1,6 +1,7 @@
 /**
  *
  * @author madsilva
+ * @author jgeati
  */
 public class Coord {
     private int row;

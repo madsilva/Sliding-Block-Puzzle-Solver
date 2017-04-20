@@ -3,6 +3,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+// I removed all checks for invalid data so hopefully we can assume that data read in will be good.
+
 public class Solver {
     // args[0] is the filename of the initial puzzle configuration
     // args[1] is the filename of the goal	
@@ -13,18 +15,11 @@ public class Solver {
         // i really dont know whats supposed to be in try and what isnt
         try {
             // should we make a fillTray method so this code doesn't look so redundant?
+            
             // Intializing the game tray
             BufferedReader in1 = new BufferedReader(new FileReader(args[0]));
             String line = in1.readLine();
-            Tray game = null;
-            // maybe we can get rid of this check
-            if (line != null) {
-                game = new Tray(Integer.parseInt(line.substring(0,1)), Integer.parseInt(line.substring(2)));
-            }
-            else {
-                System.out.println("invalid tray");
-                System.exit(1);
-            }
+            Tray game = new Tray(Integer.parseInt(line.substring(0,1)), Integer.parseInt(line.substring(2)));
             line = in1.readLine();
             while (line != null) {
                 game.addBlock(line);
@@ -41,13 +36,13 @@ public class Solver {
             }
             in2.close();
             
+            // debugging prints
             System.out.println(game.printTray());
-            System.out.println(goal.printTray());
-            
+            System.out.println(goal.printGoal());
             
             // make all this less ugly idk
             if (game.checkGoal(goal)) {
-                System.out.println("fucc");
+                System.out.println("already solved"); // not correct action
             } 
             else {
                 ArrayList<int[]> moves = game.solve(goal);

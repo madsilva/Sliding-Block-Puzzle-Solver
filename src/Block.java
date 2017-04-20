@@ -21,27 +21,22 @@ import java.util.ArrayList;
             //called on the block
             //check if the block can move up, down, left, or right
             //add to moves if possible
-          System.out.println(toString());
             if (checkMoveLeft(tray)){
-                System.out.println(checkMoveLeft(tray));
                 int[] move = {getRowPos(), getColPos(), getRowPos(), getColPos()-1};
                 moves.add(move);
             }
             
             if (checkMoveRight(tray)){
-                System.out.println(checkMoveRight(tray));
                 int[] move = {getRowPos(), getColPos(), getRowPos(), getColPos()+1};
                 moves.add(move);
             }
             
             if (checkMoveUp(tray)){
-                System.out.println(checkMoveUp(tray));
                 int[] move = {getRowPos(), getColPos(), getRowPos()-1, getColPos()};
                 moves.add(move);
             }
             
             if (checkMoveDown(tray)){
-                System.out.println(checkMoveDown(tray));
                 int[] move = {getRowPos(), getColPos(), getRowPos()+1, getColPos()};
                 moves.add(move);
             }
@@ -111,28 +106,6 @@ import java.util.ArrayList;
         
         public String toString() {
             return rows + " " + cols + " " + rowpos + " " + colpos;
-        }
-        
-        // Im not sure which is best - setting row/col vals directly or adding to them to change them.
-        // i think once we implement more we'll find out, but i wrote both methods.
-        
-        // note that r can be negative
-        public void moveRow(int r) {
-            if (rowpos+r >= 0) {
-                rowpos += r;
-            }
-            else {
-                System.out.println("move failed");
-            }
-        }
-        
-        public void moveCol(int c) {
-            if (colpos+c >= 0) {
-                colpos += c;
-            }
-            else {
-                System.out.println("move failed");
-            }
         }
         
         // validity checks?
