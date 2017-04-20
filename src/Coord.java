@@ -14,8 +14,19 @@ public class Coord {
 
     // aaaaaaaaa
     // probably not good
+    @Override
     public int hashCode() {
         return row*17 + col*13;
+    }
+    
+    @Override
+    public boolean equals(Object o){
+        if (o == this) return true;
+        if (!(o instanceof Coord)) return false;
+        
+        Coord coord = (Coord) o; 
+        return (coord.getRow() == this.getRow() && coord.getCol() == this.getCol());
+        
     }
 
     // validity checks?
