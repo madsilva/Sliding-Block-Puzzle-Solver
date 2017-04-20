@@ -2,6 +2,7 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  *
@@ -46,8 +47,10 @@ when checking the goal we would still just iterate over the values in the block 
 public class Tray {
     private int rows;
     private int cols;
+    // count for each block's unique ID
+    private int count;
     private int[][] tray;
-    private HashMap<Coord, Block> blocks;
+    private HashMap<Integer, Block> blocks;
     
     public Tray(int r, int c) {
         rows = r;
@@ -55,6 +58,7 @@ public class Tray {
         // note that tray is already filled with 0s
         tray = new int[r][c]; 
         blocks = new HashMap();
+        count = 1;
     }
     
     public int getRows() {
@@ -84,21 +88,24 @@ public class Tray {
             return false;
         }
         // create block and add it to list
-        Block b = new Block(rows, cols, rowsPos, colsPos);
-        blocks.put(new Coord(rows, cols), b); 
+        Block b = new Block(rows, cols, rowsPos, colsPos, count);
+        blocks.put(count, b); 
+        
+        System.out.println(b.toString());
         
         // fill in tray with 1s in blocks position
         // are the for loop vals correct?
         for (int r = b.getRowPos(); r<b.getRows()+b.getRowPos(); r++) {
             for (int c = b.getColPos(); c<b.getCols() + b.getColPos(); c++) {
                 if (tray[r][c]==0) {
-                    tray[r][c] = 1;
+                    tray[r][c] = b.getID();
                 }
                 else {
                     return false;
                 }
             }
         }
+        count++;
         return true;
     }
     
@@ -115,6 +122,14 @@ public class Tray {
         
         //just returns this for compiling reasons
         return new ArrayList<>();
+    }
+    
+
+    private ArrayList<> findMoves() {
+        ArrayList<int[]> moves = new ArrayList();
+        for (Block b : blocks.values()) {
+            moves.append(b.getMoves());
+        }
     }
     
     // should moveBlock be responsible for finding the block to be moved?
@@ -146,7 +161,7 @@ public class Tray {
 
     // this might be questionable...
     // maybe blocks should be public
-    public HashMap<Coord, Block> getBlocks() {
+    public HashMap<Integer, Block> getBlocks() {
         return blocks;
     }
 

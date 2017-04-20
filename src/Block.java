@@ -11,11 +11,19 @@
     public class Block {
         private int rows, cols, rowpos, colpos;
         
-        public Block(int r, int c, int rp, int cp) {
+        public Block(int r, int c, int rp, int cp, int i) {
             rows = r;
             cols = c;
             rowpos = rp;
             colpos = cp;
+        }
+        
+        public ArrayList<int[]> findMoves(int[][] tray) {
+            ArrayList<int[]> moves = new ArrayList();
+            
+            for ()
+            
+            return moves;
         }
         
         @Override
@@ -29,6 +37,10 @@
                 return true;
             }
             return false;
+        }
+        
+        public String toString() {
+            return rows + " " + cols + " " + rowpos + " " + colpos;
         }
         
         // Im not sure which is best - setting row/col vals directly or adding to them to change them.
@@ -77,5 +89,9 @@
         
         public int getColPos() {
             return colpos;
+        }
+        
+        public int getID() {
+            return id;
         }
     }
