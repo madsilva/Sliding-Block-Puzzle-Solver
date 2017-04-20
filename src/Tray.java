@@ -47,10 +47,8 @@ when checking the goal we would still just iterate over the values in the block 
 public class Tray {
     private int rows;
     private int cols;
-    // count for each block's unique ID
-    private int count;
     private int[][] tray;
-    private HashMap<Integer, Block> blocks;
+    private HashMap<Coord, Block> blocks;
     
     public Tray(int r, int c) {
         rows = r;
@@ -58,7 +56,6 @@ public class Tray {
         // note that tray is already filled with 0s
         tray = new int[r][c]; 
         blocks = new HashMap();
-        count = 1;
     }
     
     public int getRows() {
@@ -81,31 +78,23 @@ public class Tray {
         int cols = Integer.parseInt(vals[1]);
         int rowsPos = Integer.parseInt(vals[2]);
         int colsPos = Integer.parseInt(vals[3]);
-        // checking for valid values
-        // other rules for validity?
-        // should this even be here?
-        if (rows<=0 || cols<=0 || rowsPos<0 || colsPos<0) {
+
+        // create block and add it to list
+        Block b = new Block(rows, cols, rowsPos, colsPos);
+        Coord bCoord = new Coord(rowsPos, colsPos);
+        blocks.put(new Coord(rowsPos, colsPos), b);
+        if (!isOk()) {
+            blocks.remove(bCoord);
             return false;
         }
-        // create block and add it to list
-        Block b = new Block(rows, cols, rowsPos, colsPos, count);
-        blocks.put(count, b); 
-        
-        System.out.println(b.toString());
         
         // fill in tray with 1s in blocks position
-        // are the for loop vals correct?
         for (int r = b.getRowPos(); r<b.getRows()+b.getRowPos(); r++) {
             for (int c = b.getColPos(); c<b.getCols() + b.getColPos(); c++) {
-                if (tray[r][c]==0) {
-                    tray[r][c] = b.getID();
-                }
-                else {
-                    return false;
-                }
+                // we should not have to check if the spot is free bc isOk should have already done that
+                tray[r][c] = 1;
             }
         }
-        count++;
         return true;
     }
     
@@ -135,8 +124,6 @@ public class Tray {
                 solved = true;
             }
         }
-        
-        //just returns this for compiling reasons
         return solution;
     }
     
@@ -150,9 +137,10 @@ public class Tray {
     }
     
     // should moveBlock be responsible for finding the block to be moved?
-    private boolean moveBlock(Block b, int[] move) {
-        System.out.println("Will always false");
-        return false;
+    private void moveBlock(Block b, int[] move) {
+        b.setRowPos(move[2]);
+        b.setColPos(move[3]);
+        // how the fuck do we update the tray
     }
     
     // this method checks if the tray satisfies a given goal, ie the blocks in
@@ -182,10 +170,22 @@ public class Tray {
         return blocks;
     }
 
-    // im really not sure what this is actually supposed to do
+    // looks at the current block map of the tray and checks if there is overlap 
+    // by creating a 2d array of 0s and attempting to add blocks as 1s - if there 
+    // is more than one 1 in a space, the configuration is invalid.
     public boolean isOk(){
-        System.out.println("Will always false");
-        return false;
+        int[][] newTray = new int[rows][cols];
+        for (Block b : blocks.values()) {
+            for (int r = b.getRowPos(); r<b.getRowPos()+b.getRows(); r++) {
+                for (int c = b.getColPos(); c<b.getColPos()+b.getCols(); c++) {
+                    if (newTray[r][c]==1) {
+                        return false;
+                    }
+                    newTray[r][c] = 1;
+                }
+            }
+        }
+        return true;
     }
     
     // this is prob a good idea for debugging
@@ -221,47 +221,5 @@ public class Tray {
         
         return output;
     }
-    
-    // This method takes a Block b and a move array and checks the move against 
-    // the current tray to see if it's valid.
-    // Move data input format: 
-    private boolean checkMove(Block b, int[] move) {
-        System.out.println("Will always false");
-        return false;
-    }
-    
 
-    
-    private class Coord {
-        private int row;
-        private int col;
-        
-        public Coord(int r, int c) {
-            row = r;
-            col = c;
-        }
-        
-        // aaaaaaasa
-        public int hashCode() {
-            return 0;
-        }
-        
-        // validity checks?
-        public void setRow(int r) {
-            row = r;
-        }
-        
-        public void setCol(int c) {
-            col = c;
-        }
-        
-        // we might not need these, not sure
-        public int getRow() {
-            return row;
-        }
-        
-        public int getCol() {
-            return col;
-        }
-    }
 }
