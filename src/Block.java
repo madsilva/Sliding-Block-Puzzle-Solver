@@ -21,24 +21,28 @@ import java.util.ArrayList;
             //called on the block
             //check if the block can move up, down, left, or right
             //add to moves if possible
-          
+          System.out.println(toString());
             if (checkMoveLeft(tray)){
-                int[] move = {getRows(), getCols(), getRowPos(), getColPos()-1};
+                System.out.println(checkMoveLeft(tray));
+                int[] move = {getRowPos(), getColPos(), getRowPos(), getColPos()-1};
                 moves.add(move);
             }
             
             if (checkMoveRight(tray)){
-                int[] move = {getRows(), getCols(), getRowPos(), getColPos()+1};
+                System.out.println(checkMoveRight(tray));
+                int[] move = {getRowPos(), getColPos(), getRowPos(), getColPos()+1};
                 moves.add(move);
             }
             
             if (checkMoveUp(tray)){
-                int[] move = {getRows(), getCols(), getRowPos()-1, getColPos()};
+                System.out.println(checkMoveUp(tray));
+                int[] move = {getRowPos(), getColPos(), getRowPos()-1, getColPos()};
                 moves.add(move);
             }
             
             if (checkMoveDown(tray)){
-                int[] move = {getRows(), getCols(), getRowPos()+1, getColPos()};
+                System.out.println(checkMoveDown(tray));
+                int[] move = {getRowPos(), getColPos(), getRowPos()+1, getColPos()};
                 moves.add(move);
             }
             
@@ -49,7 +53,7 @@ import java.util.ArrayList;
             //returns false if in the leftmost row
             if (getColPos() == 0) return false;
             //goes through all the rows the block is in and returns false if the space left of it is occupied
-            for (int i = getRowPos(); i <= getRowPos() + getRows(); i++){
+            for (int i = getRowPos(); i < getRowPos() + getRows(); i++){
                 if (tray[i][getColPos()-1] != 0) return false;
             }
             //returns true otherwise
@@ -58,9 +62,10 @@ import java.util.ArrayList;
         
         private boolean checkMoveRight(int[][] tray){
             //returns false if in the rightmost column
-            if (getColPos() == getCols()) return false;
+            System.out.println(this.getColPos() + " " + this.getCols() + " " + tray[0].length);
+            if (this.getColPos() + this.getCols() >= tray[0].length) return false;
             //goes through all the rows the block is in and returns false if the space right of it is occupied
-            for (int i = getRowPos(); i <= getRowPos() + getRows(); i++){
+            for (int i = getRowPos(); i < getRowPos() + getRows(); i++){
                 if (tray[i][getColPos()+1] != 0) return false;
             }
             //returns true otherwise
@@ -71,7 +76,7 @@ import java.util.ArrayList;
             //returns false if in the highest row
             if (getRowPos() == 0) return false;
             //goes through all the columns the block is in and returns false if the space above it is occupied
-            for (int i = getColPos(); i <= getColPos() + getCols(); i++){
+            for (int i = getColPos(); i < getColPos() + getCols(); i++){
                 if (tray[getRowPos()-1][i] != 0) return false;
             }
             //returns true otherwise
@@ -80,9 +85,9 @@ import java.util.ArrayList;
         
         private boolean checkMoveDown(int[][] tray){
             //returns false if in the lowest row
-            if (getRowPos() == getRows()) return false;
+            if (getRowPos() + getRows() >= tray.length) return false;
             //goes through all the columns the block is in and returns false if the space below it is occupied
-            for (int i = getColPos(); i <= getColPos() + getCols(); i++){
+            for (int i = getColPos(); i < getColPos() + getCols(); i++){
                 if (tray[getRowPos()+1][i] != 0) return false;
             }
             //returns true otherwise

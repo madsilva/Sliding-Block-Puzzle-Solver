@@ -47,7 +47,7 @@ public class Solver {
             
             // make all this less ugly idk
             if (game.checkGoal(goal)) {
-                // the goal matches the tray already
+                System.out.println("fucc");
             } 
             else {
                 ArrayList<int[]> moves = game.solve(goal);

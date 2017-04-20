@@ -110,20 +110,28 @@ public class Tray {
         // check if solved
         ArrayList<int[]> solution = new ArrayList(); 
         boolean solved = false;
-        while (!solved) {
-            ArrayList<int[]> moves = findMoves();
-            if (moves.isEmpty()) { // no possible moves were found
-                return null; // or empty list idk
+        ArrayList<int[]> myMoves = findMoves();
+        for (int[] m : myMoves) {
+            for (int i=0;i<m.length;i++) {
+                System.out.print(m[i]);
             }
-            // moves can somehow be used to make a tree of moves
-            int[] myMove = moves.get(0);
-            Block moveBlock = blocks.get(new Coord(myMove[0], myMove[1])); // findng the block in the dictionary by coord key
-            moveBlock(moveBlock, myMove);
-            solution.add(myMove);
-            if (checkGoal(goal)) {
-                solved = true;
-            }
+            System.out.println();
         }
+        
+//        while (!solved) {
+//            ArrayList<int[]> moves = findMoves();
+//            if (moves.isEmpty()) { // no possible moves were found
+//                return null; // or empty list idk
+//            }
+//            // moves can somehow be used to make a tree of moves
+//            int[] myMove = moves.get(0);
+//            Block moveBlock = blocks.get(new Coord(myMove[0], myMove[1])); // findng the block in the dictionary by coord key
+//            moveBlock(moveBlock, myMove);
+//            solution.add(myMove);
+//            if (checkGoal(goal)) {
+//                solved = true;
+//            }
+//        }
         return solution;
     }
     
@@ -131,6 +139,7 @@ public class Tray {
     private ArrayList<int[]> findMoves() {
         ArrayList<int[]> moves = new ArrayList();
         for (Block b : blocks.values()) {
+            
             moves.addAll(b.findMoves(tray));
         }
         return moves;
@@ -138,8 +147,11 @@ public class Tray {
     
     // should moveBlock be responsible for finding the block to be moved?
     private void moveBlock(Block b, int[] move) {
+        blocks.remove(new Coord(b.getRowPos(), b.getColPos()));
         b.setRowPos(move[2]);
         b.setColPos(move[3]);
+        blocks.put(new Coord(b.getRowPos(), b.getColPos()), b);
+        
         // how the fuck do we update the tray
     }
     
@@ -166,7 +178,7 @@ public class Tray {
 
     // this might be questionable...
     // maybe blocks should be public
-    public HashMap<Integer, Block> getBlocks() {
+    public HashMap<Coord, Block> getBlocks() {
         return blocks;
     }
 
