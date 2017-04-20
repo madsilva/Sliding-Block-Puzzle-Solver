@@ -1,17 +1,14 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+import java.util.ArrayList;
 
 /**
  *
  * @author madsilva
+ * @author jgeati
  */
     public class Block {
         private int rows, cols, rowpos, colpos;
         
-        public Block(int r, int c, int rp, int cp, int i) {
+        public Block(int r, int c, int rp, int cp) {
             rows = r;
             cols = c;
             rowpos = rp;
@@ -21,10 +18,78 @@
         public ArrayList<int[]> findMoves(int[][] tray) {
             ArrayList<int[]> moves = new ArrayList();
             
-            for ()
+            //called on the block
+            //check if the block can move up, down, left, or right
+            //add to moves if possible
+          
+            if (checkMoveLeft(tray)){
+                int[] move = {getRows(), getCols(), getRowPos(), getColPos()-1};
+                moves.add(move);
+            }
+            
+            if (checkMoveRight(tray)){
+                int[] move = {getRows(), getCols(), getRowPos(), getColPos()+1};
+                moves.add(move);
+            }
+            
+            if (checkMoveUp(tray)){
+                int[] move = {getRows(), getCols(), getRowPos()-1, getColPos()};
+                moves.add(move);
+            }
+            
+            if (checkMoveDown(tray)){
+                int[] move = {getRows(), getCols(), getRowPos()+1, getColPos()};
+                moves.add(move);
+            }
             
             return moves;
         }
+        
+        private boolean checkMoveLeft(int[][] tray){
+            //returns false if in the leftmost row
+            if (getColPos() == 0) return false;
+            //goes through all the rows the block is in and returns false if the space left of it is occupied
+            for (int i = getRowPos(); i <= getRowPos() + getRows(); i++){
+                if (tray[i][getColPos()-1] != 0) return false;
+            }
+            //returns true otherwise
+            return true;
+        }
+        
+        private boolean checkMoveRight(int[][] tray){
+            //returns false if in the rightmost column
+            if (getColPos() == getCols()) return false;
+            //goes through all the rows the block is in and returns false if the space right of it is occupied
+            for (int i = getRowPos(); i <= getRowPos() + getRows(); i++){
+                if (tray[i][getColPos()+1] != 0) return false;
+            }
+            //returns true otherwise
+            return true;
+        }
+        
+        private boolean checkMoveUp(int[][] tray){
+            //returns false if in the highest row
+            if (getRowPos() == 0) return false;
+            //goes through all the columns the block is in and returns false if the space above it is occupied
+            for (int i = getColPos(); i <= getColPos() + getCols(); i++){
+                if (tray[getRowPos()-1][i] != 0) return false;
+            }
+            //returns true otherwise
+            return true;
+        }
+        
+        private boolean checkMoveDown(int[][] tray){
+            //returns false if in the lowest row
+            if (getRowPos() == getRows()) return false;
+            //goes through all the columns the block is in and returns false if the space below it is occupied
+            for (int i = getColPos(); i <= getColPos() + getCols(); i++){
+                if (tray[getRowPos()+1][i] != 0) return false;
+            }
+            //returns true otherwise
+            return true;
+        }
+        
+        
         
         @Override
         // oh my god do we have to override hashcode if we do this
@@ -89,9 +154,5 @@
         
         public int getColPos() {
             return colpos;
-        }
-        
-        public int getID() {
-            return id;
-        }
+        }  
     }
