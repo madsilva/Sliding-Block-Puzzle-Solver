@@ -119,17 +119,34 @@ public class Tray {
         // get possible moves
         // make a move
         // check if solved
+        ArrayList<int[]> solution = new ArrayList(); 
+        boolean solved = false;
+        while (!solved) {
+            ArrayList<int[]> moves = findMoves();
+            if (moves.isEmpty()) { // no possible moves were found
+                return null; // or empty list idk
+            }
+            // moves can somehow be used to make a tree of moves
+            int[] myMove = moves.get(0);
+            Block moveBlock = blocks.get(new Coord(myMove[0], myMove[1])); // findng the block in the dictionary by coord key
+            moveBlock(moveBlock, myMove);
+            solution.add(myMove);
+            if (checkGoal(goal)) {
+                solved = true;
+            }
+        }
         
         //just returns this for compiling reasons
-        return new ArrayList<>();
+        return solution;
     }
     
 
-    private ArrayList<> findMoves() {
+    private ArrayList<int[]> findMoves() {
         ArrayList<int[]> moves = new ArrayList();
         for (Block b : blocks.values()) {
-            moves.append(b.getMoves());
+            moves.addAll(b.findMoves(tray));
         }
+        return moves;
     }
     
     // should moveBlock be responsible for finding the block to be moved?
