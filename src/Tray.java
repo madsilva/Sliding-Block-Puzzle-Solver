@@ -15,6 +15,10 @@ by their coordinates when it's time to move them.
 Goal trays are represented as Trays because of the convenience of the preexisting addBlock method and Block map.  
 */
 
+/*CURRENT ERRORS:
+If the dimensions of the tray are 2 digits or more, parseInt/substring doesn't work
+If requires more than one move, makes the same two moves over and over
+*/
 public class Tray {
     private int rows, cols;
     private int[][] tray;
@@ -47,7 +51,7 @@ public class Tray {
 //            }
 //            System.out.println();
 //        }
-        solved = true; // added to prevent infinite loop during testing of other things
+        //solved = true; // added to prevent infinite loop during testing of other things
         while (!solved) {
             ArrayList<int[]> moves = findMoves();
             if (moves.isEmpty()) { // no possible moves were found
@@ -59,6 +63,7 @@ public class Tray {
             moveBlock(moveBlock, myMove);
             solution.add(myMove);
             if (checkGoal(goal)) {
+                System.out.println("solved");
                 solved = true;
             }
         }
@@ -79,7 +84,6 @@ public class Tray {
         b.setRowPos(move[2]);
         b.setColPos(move[3]);
         blocks.put(new Coord(b.getRowPos(), b.getColPos()), b);
-        
         // how the fuck do we update the tray
     }
     
