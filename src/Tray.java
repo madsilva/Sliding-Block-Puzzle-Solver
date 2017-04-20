@@ -1,6 +1,7 @@
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
 
 /**
  *
@@ -13,16 +14,6 @@ import java.util.List;
 // maybe make a solution tray and check if all the spaces filled in that tray are filled in the game tray
 // then if thats true, check if the blocks match
 
-// how should we store goal files?
-// maybe: store goal within each tray and call tray.checkgoal to see if goal has been met
-// should we just make them their own trays?
-
-// tray grid keeps track of what space is free with 0s and 1s
-// block objects keep track of their own areas/coords
-// when trying to make a move, iterate thru the list of blocks and see what can be 
-
-// we HAVE to sort the blocks somehow. 
-
 /* Steps for finding moves? 
 Either: go thru list of blocks and check which ones have 0s adjacent, then check which one of those can actually be moved
 or look at where the 0s are in tray, and find the blocks that are adjacent to the 0s.
@@ -31,18 +22,39 @@ then execute the move and record it
 then check whether goal has been met
 */
 
+/* Current design of Tray:
+int[][] tray holds a grid of 0s ans 1s indicating where blocks are and are not. This is updated when a block is added or a move is made.
+I'm not sure about whether this is something we want to keep long term.
+blocks will be a Map (HashMap?) of (Coord:Block) pairings. We need to implement coord.hashCode and i THINK coord.equals() for this to work
+do we want blocks to have internal Coord objects or just ints? probably coords
+Map usage allows for fast lookup of blocks if you have coords.
+
+What we need is a good way to find moveable blocks
+should blocks check their own moveability? boolean block.isMoveable, checks edges of block against tray 0s and 1s
+
+maybe representing each block as its own integer isnt the worst idea
+each block gets an integer that is its key in the map and its representation on the tray
+when looking for moves, start with the 0s in the tray array and look at whats adjacent
+look up blocks adjacent to 0s by their integer id and check if they are moveable
+this might be more efficient bc we wont waste time looking at blocks that arent even adjacent to blank space
+we WILL waste time looking for 0s tho
+but this also might allow for more efficent storage of tray configs, because each config could be represented ONLY as a 2d array (maybe)
+when checking the goal we would still just iterate over the values in the block map and check if every block in goal has a block in tray - would not have to worry about each block's id
+
+*/
+
 public class Tray {
     private int rows;
     private int cols;
     private int[][] tray;
-    private ArrayList<Block> blocks;
+    private HashMap<Coord, Block> blocks;
     
     public Tray(int r, int c) {
         rows = r;
         cols = c;
         // note that tray is already filled with 0s
         tray = new int[r][c]; 
-        blocks = new ArrayList();
+        blocks = new HashMap();
     }
     
     public int getRows() {
@@ -73,7 +85,7 @@ public class Tray {
         }
         // create block and add it to list
         Block b = new Block(rows, cols, rowsPos, colsPos);
-        blocks.add(b); 
+        blocks.put(new Coord(rows, cols), b); 
         
         // fill in tray with 1s in blocks position
         // are the for loop vals correct?
@@ -117,9 +129,9 @@ public class Tray {
     public boolean checkGoal(Tray goal) {
         // go thru this.blocks and then go thru goal and see if each block in goal matches a block in this
         // how is this not going to run in n*m lmao
-        for (Block g : goal.getBlocks()) {
+        for (Block g : goal.getBlocks().values()) {
             boolean found = false;
-            for (Block b : blocks) {
+            for (Block b : blocks.values()) {
                 if (b.equals(g)) {
                     found = true;
                     break;
@@ -134,7 +146,7 @@ public class Tray {
 
     // this might be questionable...
     // maybe blocks should be public
-    public ArrayList<Block> getBlocks() {
+    public HashMap<Coord, Block> getBlocks() {
         return blocks;
     }
 
@@ -173,75 +185,38 @@ public class Tray {
         return false;
     }
     
-    private class Block {
-        private int rows, cols, rowpos, colpos;
+
+    
+    private class Coord {
+        private int row;
+        private int col;
         
-        public Block(int r, int c, int rp, int cp) {
-            rows = r;
-            cols = c;
-            rowpos = rp;
-            colpos = cp;
+        public Coord(int r, int c) {
+            row = r;
+            col = c;
         }
         
-        @Override
-        // oh my god do we have to override hashcode if we do this
-        public boolean equals(Object obj) {
-            if (obj.getClass() != getClass() || obj==null) {
-                return false;
-            }
-            Block other = (Block)obj; // this is prob bad but i got it from stackexchange
-            if (rows==other.rows && cols==other.cols && rowpos==other.rowpos && colpos==other.colpos) {
-                return true;
-            }
-            return false;
-        }
-        
-        // Im not sure which is best - setting row/col vals directly or adding to them to change them.
-        // i think once we implement more we'll find out, but i wrote both methods.
-        
-        // note that r can be negative
-        public void moveRow(int r) {
-            if (rowpos+r >= 0) {
-                rowpos += r;
-            }
-            else {
-                System.out.println("move failed");
-            }
-        }
-        
-        public void moveCol(int c) {
-            if (colpos+c >= 0) {
-                colpos += c;
-            }
-            else {
-                System.out.println("move failed");
-            }
+        // aaaaaaasa
+        public int hashCode() {
+            return 0;
         }
         
         // validity checks?
-        public void setRowPos(int r) {
-            rowpos = r;
+        public void setRow(int r) {
+            row = r;
         }
         
-        public void setColPos(int c) {
-            colpos = c;
+        public void setCol(int c) {
+            col = c;
         }
         
-        // should these fields just be public?
-        public int getRows() {
-            return rows;
+        // we might not need these, not sure
+        public int getRow() {
+            return row;
         }
         
-        public int getCols() {
-            return cols;
-        }
-        
-        public int getRowPos() {
-            return rowpos;
-        }
-        
-        public int getColPos() {
-            return colpos;
+        public int getCol() {
+            return col;
         }
     }
 }
