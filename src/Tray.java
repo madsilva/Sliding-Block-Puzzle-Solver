@@ -185,6 +185,19 @@ public class Tray {
         return output;
     }
     
+    public String printGoal() {
+        String output = "Goal tray: \n";
+        
+        for (int r=0; r<rows;r++) {
+            for (int c=0; c<cols; c++) {
+                output += tray[r][c] + " ";
+            }
+            output += "\n";
+        }
+        
+        return output;
+    }
+    
     // this will be harder because we should deliniate where each block is - not sure if its worth it
     public String toString() {
         String output = "";
