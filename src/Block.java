@@ -57,7 +57,6 @@ import java.util.ArrayList;
         
         private boolean checkMoveRight(int[][] tray){
             //returns false if in the rightmost column
-            System.out.println(this.getColPos() + " " + this.getCols() + " " + tray[0].length);
             if (this.getColPos() + this.getCols() >= tray[0].length) return false;
             //goes through all the rows the block is in and returns false if the space right of it is occupied
             for (int i = getRowPos(); i < getRowPos() + getRows(); i++){

@@ -19,7 +19,8 @@ public class Solver {
             // Intializing the game tray
             BufferedReader in1 = new BufferedReader(new FileReader(args[0]));
             String line = in1.readLine();
-            Tray game = new Tray(Integer.parseInt(line.substring(0,1)), Integer.parseInt(line.substring(2)));
+            String[] lineVals = line.split(" ");
+            Tray game = new Tray(Integer.parseInt(lineVals[0]), Integer.parseInt(lineVals[1]));
             line = in1.readLine();
             while (line != null) {
                 game.addBlock(line);
@@ -41,18 +42,25 @@ public class Solver {
             System.out.println(goal.printGoal());
             
             // make all this less ugly idk
+            // if the goal is already met by the given tray, no action is taken 
+            // and the program terminates normally.
             if (game.checkGoal(goal)) {
-                System.out.println("already solved"); // not correct action
+                System.out.println("already solved"); // debug output
+                System.exit(0);
             } 
+            // if the goal is not met, attempt to generate a list of solution moves
+            // using the game tray's solve method.
             else {
                 ArrayList<int[]> moves = game.solve(goal);
+                // if solve doesn't return any moves, the puzzle is impossible and
+                // the program terminates with an error
                 if (moves.isEmpty()) {
-                     System.out.println("impossible to solve");
-                    // exits the game if theres no solution
-                    // commented out because theres no solve method yet
+                     System.out.println("impossible to solve"); // debug output
+                    // commented out because theres no working solve method yet
                     // System.exit(1);
                 }
                 else {
+                    // print out the generated solution moves. 
                     for (int[] move : moves) {
                         System.out.println(move[0] + " " + move[1] + " " + move[2] + " " + move[3]);
                     }
@@ -60,7 +68,7 @@ public class Solver {
             }
         }
         catch (IOException e) { // is this the right exception?
-            System.out.println("invalid file");
+            System.out.println("File could not be opened.");
         }  
     }	
 }
