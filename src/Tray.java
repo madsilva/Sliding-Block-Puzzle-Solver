@@ -45,10 +45,15 @@ public class Tray {
     // making a tray that is 1 move different than a parent tray for  
     // creating a tree of trays
     public Tray(Tray parent, int[] move) {
-        blocks = parent.getBlocks();
-        tray = parent.getTray();
+        blocks = new HashMap();
+        for (Coord c : parent.blocks.keySet()) {
+            Coord newCoord = c.copy();
+            Block newBlock = parent.blocks.get(c).copy();
+            blocks.put(newCoord, newBlock);
+        }
+        // moveblock creates the new tray
         moveBlock(move);
-        appliedMoves = parent.getAppliedMoves();
+        appliedMoves = new ArrayList(parent.appliedMoves);
         appliedMoves.add(move);
     }
     

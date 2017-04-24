@@ -12,6 +12,10 @@ public class Coord {
         col = c;
     }
 
+    public Coord copy() {
+        return new Coord(row, col);
+    }
+    
     // aaaaaaaaa
     // probably not good
     @Override

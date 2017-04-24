@@ -15,6 +15,10 @@ import java.util.ArrayList;
             colpos = cp;
         }
         
+        public Block copy() {
+            return new Block(rows, cols, rowpos, colpos);
+        }
+        
         public ArrayList<int[]> findMoves(int[][] tray) {
             ArrayList<int[]> moves = new ArrayList();
             
