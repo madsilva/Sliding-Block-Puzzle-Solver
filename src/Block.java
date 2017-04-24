@@ -88,11 +88,11 @@ import java.util.ArrayList;
             return true;
         }
         
-        
-        
         @Override
-        // oh my god do we have to override hashcode if we do this
         public boolean equals(Object obj) {
+            if (obj==this) {
+                return true;
+            }
             if (obj.getClass() != getClass() || obj==null) {
                 return false;
             }
@@ -101,6 +101,14 @@ import java.util.ArrayList;
                 return true;
             }
             return false;
+        }
+        
+        @Override
+        // bad
+        public int hashCode() {
+            int hash;
+            hash = 13*rows + 17*cols + 19*rowpos + 29*colpos;
+            return hash;
         }
         
         public String toString() {
