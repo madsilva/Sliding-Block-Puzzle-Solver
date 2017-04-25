@@ -67,6 +67,7 @@ public class Tray {
         TreeNode<Tray> root = new TreeNode(this);
         visited.add(this);
         TreeNode<Tray> nodegoal = recurse(root, goal);
+        if (nodegoal == null) return new ArrayList();
         return nodegoal.getData().getAppliedMoves();
     }
     
