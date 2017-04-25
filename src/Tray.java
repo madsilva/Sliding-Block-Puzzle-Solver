@@ -62,8 +62,6 @@ public class Tray {
     // Moves are represented as int arrays and are formatted:
     // start row, start col, end row, end col
     public ArrayList<int[]> solve(Tray goal) {
-        ArrayList<int[]> solution = new ArrayList(); 
-
         TreeNode<Tray> root = new TreeNode(this);
         visited.add(this);
         TreeNode<Tray> nodegoal = recurse(root, goal);

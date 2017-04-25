@@ -55,9 +55,9 @@ public class Solver {
                 // if solve doesn't return any moves, the puzzle is impossible and
                 // the program terminates with an error
                 if (moves.isEmpty()) {
-                     System.out.println("impossible to solve"); // debug output
-                    // commented out because theres no working solve method yet
-                    // System.exit(1);
+                    System.out.println("impossible to solve"); // debug output
+                    //commented out because theres no working solve method yet
+                    //System.exit(1);
                 }
                 else {
                     // print out the generated solution moves. 
