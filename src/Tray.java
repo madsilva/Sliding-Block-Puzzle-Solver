@@ -82,13 +82,13 @@ public class Tray {
             return n;
         }
         // i hope its okay that i removed the else here, i dont think its needed
-        System.out.println("parent tray with # of parents: " + c + " " + "hash: " + n.getData().hashCode()+ " " + n.getData().printTray());
+        //System.out.println("parent tray with # of parents: " + c + " " + "hash: " + n.getData().hashCode()+ " " + n.getData().printTray());
         ArrayList<int[]> possibleMoves = (n.getData().findMoves());
         for (int[] m : possibleMoves) {
             Tray possibleChild = new Tray(n.getData(), m);
             //System.out.println("potential child with hash: " + newTray.hashCode() + " " + newTray.printTray());
             if (visited.add(possibleChild)) {
-                System.out.println("child with hash: " + possibleChild.hashCode() + " " + possibleChild.printTray());
+                //System.out.println("child with hash: " + possibleChild.hashCode() + " " + possibleChild.printTray());
                 n.addChild(possibleChild);
                 // adding the below if statement makes it work for SOME boards, not all
                 // although this is probably good because it saves time to check all generated children if they are the goal immedeately 
@@ -106,9 +106,10 @@ public class Tray {
         ArrayList<TreeNode> nodes = n.getChildren();
         
             for (TreeNode t : nodes) {
-                return recurse(t, goal, c+1);
+                TreeNode returned = recurse(t, goal, c+1);
+                if (returned != null) return returned;
             }
-        
+        //System.out.println("Reaching null");
         return null;
     }
     
