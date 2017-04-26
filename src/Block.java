@@ -18,6 +18,53 @@ import java.util.ArrayList;
         public Block copy() {
             return new Block(rows, cols, rowpos, colpos);
         }
+        /*
+        public ArrayList<int[]> findMoves(int[][] tray) {
+            ArrayList<int[]> moves = new ArrayList();
+            
+            int[] leftMove = getLeftMove();
+            if (leftMove != null) {
+                moves.add(leftMove);
+            }
+            int[] rightMove = getRightMove();
+            if (rightMove != null) {
+                moves.add(rightMove);
+            }
+            int[] upMove = getUpMove();
+            if (leftMove != null) {
+                moves.add(leftMove);
+            }
+            int[] downMove = getDownMove();
+            if (downMove != null) {
+                moves.add(downMove);
+            }
+            
+            return moves;
+        }
+        
+        private int[] getLeftMove(int[][] tray) {
+            //returns null if in the leftmost row
+            if (getColPos() == 0) return null;
+            //goes through all the rows the block is in and returns null if the space left of it is occupied
+            // the number of spaces it is possible to move left
+            int colmove = 0;
+            boolean blocked = false;
+            while (!blocked) {
+                for (int i = getRowPos(); i < getRowPos() + getRows(); i++){
+                    if (tray[i][colmove] != 0) {
+                        blocked = true;
+                        break;
+                    }
+                }
+                colmove +=1;
+            }
+            if (colmove>0) {
+                int[] move = {rowpos, colpos, rowpos, colpos-colmove};
+                return move;
+            }
+            return null;
+        } */
+        
         
         public ArrayList<int[]> findMoves(int[][] tray) {
             ArrayList<int[]> moves = new ArrayList();
@@ -26,23 +73,23 @@ import java.util.ArrayList;
             //check if the block can move up, down, left, or right
             //add to moves if possible
             if (checkMoveLeft(tray)){
-                int[] move = {getRowPos(), getColPos(), getRowPos(), getColPos()-1};
-                moves.add(move);
+                int[] lmove = {getRowPos(), getColPos(), getRowPos(), getColPos()-1};
+                moves.add(lmove);
             }
-            
+            System.out.println(checkMoveRight(tray));
             if (checkMoveRight(tray)){
-                int[] move = {getRowPos(), getColPos(), getRowPos(), getColPos()+1};
-                moves.add(move);
+                int[] rmove = {getRowPos(), getColPos(), getRowPos(), getColPos()+1};
+                moves.add(rmove);
             }
             
             if (checkMoveUp(tray)){
-                int[] move = {getRowPos(), getColPos(), getRowPos()-1, getColPos()};
-                moves.add(move);
+                int[] umove = {getRowPos(), getColPos(), getRowPos()-1, getColPos()};
+                moves.add(umove);
             }
             
             if (checkMoveDown(tray)){
-                int[] move = {getRowPos(), getColPos(), getRowPos()+1, getColPos()};
-                moves.add(move);
+                int[] dmove = {getRowPos(), getColPos(), getRowPos()+1, getColPos()};
+                moves.add(dmove);
             }
             
             return moves;
@@ -64,7 +111,7 @@ import java.util.ArrayList;
             if (this.getColPos() + this.getCols() >= tray[0].length) return false;
             //goes through all the rows the block is in and returns false if the space right of it is occupied
             for (int i = getRowPos(); i < getRowPos() + getRows(); i++){
-                if (tray[i][getColPos()+1] != 0) return false;
+                if (tray[i][getColPos()+getCols()] != 0) return false;
             }
             //returns true otherwise
             return true;
@@ -86,7 +133,7 @@ import java.util.ArrayList;
             if (getRowPos() + getRows() >= tray.length) return false;
             //goes through all the columns the block is in and returns false if the space below it is occupied
             for (int i = getColPos(); i < getColPos() + getCols(); i++){
-                if (tray[getRowPos()+1][i] != 0) return false;
+                if (tray[getRowPos()+getRows()][i] != 0) return false;
             }
             //returns true otherwise
             return true;
