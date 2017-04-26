@@ -18,6 +18,7 @@ import java.util.ArrayList;
         public Block copy() {
             return new Block(rows, cols, rowpos, colpos);
         }
+        // my start at generating multi space moves, ignore for now
         /*
         public ArrayList<int[]> findMoves(int[][] tray) {
             ArrayList<int[]> moves = new ArrayList();
@@ -76,7 +77,7 @@ import java.util.ArrayList;
                 int[] lmove = {getRowPos(), getColPos(), getRowPos(), getColPos()-1};
                 moves.add(lmove);
             }
-            System.out.println(checkMoveRight(tray));
+
             if (checkMoveRight(tray)){
                 int[] rmove = {getRowPos(), getColPos(), getRowPos(), getColPos()+1};
                 moves.add(rmove);
@@ -157,9 +158,15 @@ import java.util.ArrayList;
         @Override
         // bad
         public int hashCode() {
-            int hash;
-            hash = 13*rows + 17*cols + 19*rowpos + 29*colpos;
-            return hash;
+              int sum = 1;
+              sum = sum*31 + rows;
+              sum = sum*31 + cols;
+              sum = sum*31 + rowpos;
+              sum = sum*31 + colpos;
+              return sum;
+//            int hash;
+//            hash = 13*rows + 17*cols + 19*rowpos + 29*colpos;
+//            return hash;
         }
         
         public String toString() {

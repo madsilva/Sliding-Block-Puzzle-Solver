@@ -30,7 +30,7 @@ public class TreeNode<T> {
     }
     
     public void addChild(T c) {
-        children.add(new TreeNode(c));
+        children.add(new TreeNode(c, this));
     }
     
     public ArrayList<TreeNode> getChildren() {
