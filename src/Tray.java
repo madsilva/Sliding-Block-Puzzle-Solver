@@ -30,8 +30,7 @@ if we could find out some way to calculate degrees of similarity/closeness to th
 public class Tray {
     private static int rows, cols;
     private int[][] tray;
-    private int[][] lastIsOK; // this is very questionable
-    // i did this so that we can use the 2d arrays made by isOK while still having isOK return only booleans
+    private int[][] lastIsOK;
     private HashMap<Coord, Block> blocks;
     private ArrayList<int[]> appliedMoves;
     private static HashSet<Tray> visited;
@@ -43,8 +42,8 @@ public class Tray {
         // note that tray is already filled with 0s
         tray = new int[r][c]; 
         blocks = new HashMap();
-        visited = new HashSet();
         appliedMoves = new ArrayList();
+        visited = new HashSet();
     }
     
     // making a tray that is 1 move different than a parent tray for  
@@ -69,9 +68,11 @@ public class Tray {
     public ArrayList<int[]> solve(Tray goal) {
         TreeNode<Tray> root = new TreeNode(this);
         visited.add(this);
-        TreeNode<Tray> nodegoal = recurse(root, goal, 0);
-        if (nodegoal == null) return new ArrayList();
-        return nodegoal.getData().getAppliedMoves();
+        TreeNode<Tray> goalNode = recurse(root, goal, 0);
+        if (goalNode == null) {
+            return new ArrayList();
+        }
+        return goalNode.getData().getAppliedMoves();
     }
     
 
@@ -114,21 +115,20 @@ public class Tray {
     }
     
     @Override
+    public int hashCode() {
+        return blocks.hashCode();
+    }
+    
+    @Override
     public boolean equals(Object obj) {
         if (obj==this) {
             return true;
         }
-        if (obj.getClass() != getClass() || obj==null) {
+        if (obj==null || !(obj instanceof Tray)) {
             return false;
         }
         Tray other = (Tray)obj;
-        // questionable
-        return other.getBlocks().equals(blocks);
-    }
-    
-    @Override
-    public int hashCode() {
-        return blocks.hashCode();
+        return other.blocks.equals(this.blocks);
     }
      
     // this method returns an arraylist of every possible move for each block
@@ -144,10 +144,9 @@ public class Tray {
         // removing the block to be moved from the map so we can update its coords
         // and return it with an updated key
         Block b = blocks.remove(new Coord(move[0], move[1]));
-        b.setRowPos(move[2]);
-        b.setColPos(move[3]);
+        b.setRowColPos(move[2], move[3]);
         blocks.put(new Coord(move[2], move[3]), b);
-        // how the fuck do we update the tray
+        // updating the tray
         if (isOk()) {
             tray = lastIsOK;
         }
@@ -161,16 +160,10 @@ public class Tray {
     // this does NOT check if two trays are equal
     public boolean checkGoal(Tray goal) {
         // go thru this.blocks and then go thru goal and see if each block in goal matches a block in this
-        // how is this not going to run in n*m lmao
-        for (Block g : goal.getBlocks().values()) {
-            boolean found = false;
-            for (Block b : blocks.values()) {
-                if (b.equals(g)) {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
+        for (Block g : goal.blocks.values()) {
+            Coord key = new Coord(g.getRowPos(), g.getColPos());
+            Block compBlock = this.blocks.get(key);
+            if (!g.equals(compBlock)) {
                 return false;
             }
         }
@@ -218,14 +211,6 @@ public class Tray {
             return false;
         }
         tray = lastIsOK;
-        
-//        // fill in tray with 1s in blocks position
-//        for (int r = b.getRowPos(); r<b.getRows()+b.getRowPos(); r++) {
-//            for (int c = b.getColPos(); c<b.getCols() + b.getColPos(); c++) {
-//                // we should not have to check if the spot is free bc isOk should have already done that
-//                tray[r][c] = 1;
-//            }
-//        }
         return true;
     }
     

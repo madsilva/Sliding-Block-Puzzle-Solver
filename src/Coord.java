@@ -4,8 +4,7 @@
  * @author jgeati
  */
 public class Coord {
-    private int row;
-    private int col;
+    private int row, col;
 
     public Coord(int r, int c) {
         row = r;
@@ -16,21 +15,21 @@ public class Coord {
         return new Coord(row, col);
     }
     
-    // aaaaaaaaa
-    // probably not good
     @Override
     public int hashCode() {
         return row*17 + col*13;
     }
     
     @Override
-    public boolean equals(Object o){
-        if (o == this) return true;
-        if (!(o instanceof Coord)) return false;
-        
-        Coord coord = (Coord) o; 
-        return (coord.getRow() == this.getRow() && coord.getCol() == this.getCol());
-        
+    public boolean equals(Object obj){
+        if (obj==this) {
+            return true;
+        }
+        if (obj==null || !(obj instanceof Coord)) {
+            return false;
+        }
+        Coord other = (Coord)obj; 
+        return (other.row == this.row && other.col == this.col);
     }
 
     // validity checks?

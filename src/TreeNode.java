@@ -1,15 +1,10 @@
 
 import java.util.ArrayList;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 /**
  *
  * @author madsilva
+ * @author jgeati
  */
 public class TreeNode<T> {
     private T data;
@@ -23,6 +18,7 @@ public class TreeNode<T> {
         children = new ArrayList();
     }
     
+    // making a child node with parent p
     public TreeNode(T d, TreeNode p) {
         data = d;
         parent = p;
@@ -39,10 +35,5 @@ public class TreeNode<T> {
     
     public T getData() {
         return data;
-    }
-    
-    // if node is root returns null
-    public TreeNode getParent() {
-        return parent;
     }
 }

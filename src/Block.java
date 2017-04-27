@@ -14,59 +14,7 @@ import java.util.ArrayList;
             rowpos = rp;
             colpos = cp;
         }
-        
-        public Block copy() {
-            return new Block(rows, cols, rowpos, colpos);
-        }
-        // my start at generating multi space moves, ignore for now
-        /*
-        public ArrayList<int[]> findMoves(int[][] tray) {
-            ArrayList<int[]> moves = new ArrayList();
-            
-            int[] leftMove = getLeftMove();
-            if (leftMove != null) {
-                moves.add(leftMove);
-            }
-            int[] rightMove = getRightMove();
-            if (rightMove != null) {
-                moves.add(rightMove);
-            }
-            int[] upMove = getUpMove();
-            if (leftMove != null) {
-                moves.add(leftMove);
-            }
-            int[] downMove = getDownMove();
-            if (downMove != null) {
-                moves.add(downMove);
-            }
-            
-            return moves;
-        }
-        
-        private int[] getLeftMove(int[][] tray) {
-            //returns null if in the leftmost row
-            if (getColPos() == 0) return null;
-            //goes through all the rows the block is in and returns null if the space left of it is occupied
-            // the number of spaces it is possible to move left
-            int colmove = 0;
-            boolean blocked = false;
-            while (!blocked) {
-                for (int i = getRowPos(); i < getRowPos() + getRows(); i++){
-                    if (tray[i][colmove] != 0) {
-                        blocked = true;
-                        break;
-                    }
-                }
-                colmove +=1;
-            }
-            if (colmove>0) {
-                int[] move = {rowpos, colpos, rowpos, colpos-colmove};
-                return move;
-            }
-            return null;
-        } */
-        
-        
+
         public ArrayList<int[]> findMoves(int[][] tray) {
             ArrayList<int[]> moves = new ArrayList();
             
@@ -140,23 +88,11 @@ import java.util.ArrayList;
             return true;
         }
         
-        @Override
-        public boolean equals(Object obj) {
-            if (obj==this) {
-                return true;
-            }
-            if (obj.getClass() != getClass() || obj==null) {
-                return false;
-            }
-            Block other = (Block)obj; // this is prob bad but i got it from stackexchange
-            if (rows==other.rows && cols==other.cols && rowpos==other.rowpos && colpos==other.colpos) {
-                return true;
-            }
-            return false;
+        public Block copy() {
+            return new Block(rows, cols, rowpos, colpos);
         }
         
-        @Override
-        // bad
+         @Override
         public int hashCode() {
               int sum = 1;
               sum = sum*31 + rows;
@@ -164,23 +100,30 @@ import java.util.ArrayList;
               sum = sum*31 + rowpos;
               sum = sum*31 + colpos;
               return sum;
-//            int hash;
-//            hash = 13*rows + 17*cols + 19*rowpos + 29*colpos;
-//            return hash;
         }
         
+        @Override
+        public boolean equals(Object obj) {
+            if (obj==this) {
+                return true;
+            }
+            if (obj==null || !(obj instanceof Block)) {
+                return false;
+            }
+            Block other = (Block)obj;
+            return (this.rows==other.rows && this.cols==other.cols && this.rowpos==other.rowpos && this.colpos==other.colpos);
+        }
+        
+        // debug method
         public String toString() {
             return rows + " " + cols + " " + rowpos + " " + colpos;
         }
         
-        // validity checks?
-        public void setRowPos(int r) {
+        public void setRowColPos(int r, int c) {
             rowpos = r;
-        }
-        
-        public void setColPos(int c) {
             colpos = c;
         }
+
         
         // should these fields just be public?
         public int getRows() {
