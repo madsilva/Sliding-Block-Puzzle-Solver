@@ -5,197 +5,145 @@ import java.util.ArrayList;
  * @author madsilva
  * @author jgeati
  */
-    public class Block {
-        private int rows, cols, rowpos, colpos;
-        
-        public Block(int r, int c, int rp, int cp) {
-            rows = r;
-            cols = c;
-            rowpos = rp;
-            colpos = cp;
-        }
-        
-        public Block copy() {
-            return new Block(rows, cols, rowpos, colpos);
-        }
-        // my start at generating multi space moves, ignore for now
-        /*
-        public ArrayList<int[]> findMoves(int[][] tray) {
-            ArrayList<int[]> moves = new ArrayList();
-            
-            int[] leftMove = getLeftMove();
-            if (leftMove != null) {
-                moves.add(leftMove);
-            }
-            int[] rightMove = getRightMove();
-            if (rightMove != null) {
-                moves.add(rightMove);
-            }
-            int[] upMove = getUpMove();
-            if (leftMove != null) {
-                moves.add(leftMove);
-            }
-            int[] downMove = getDownMove();
-            if (downMove != null) {
-                moves.add(downMove);
-            }
-            
-            return moves;
-        }
-        
-        private int[] getLeftMove(int[][] tray) {
-            //returns null if in the leftmost row
-            if (getColPos() == 0) return null;
-            //goes through all the rows the block is in and returns null if the space left of it is occupied
-            // the number of spaces it is possible to move left
-            int colmove = 0;
-            boolean blocked = false;
-            while (!blocked) {
-                for (int i = getRowPos(); i < getRowPos() + getRows(); i++){
-                    if (tray[i][colmove] != 0) {
-                        blocked = true;
-                        break;
-                    }
-                }
-                colmove +=1;
-            }
-            if (colmove>0) {
-                int[] move = {rowpos, colpos, rowpos, colpos-colmove};
-                return move;
-            }
-            return null;
-        } */
-        
-        
-        public ArrayList<int[]> findMoves(int[][] tray) {
-            ArrayList<int[]> moves = new ArrayList();
-            
-            //called on the block
-            //check if the block can move up, down, left, or right
-            //add to moves if possible
-            if (checkMoveLeft(tray)){
-                int[] lmove = {getRowPos(), getColPos(), getRowPos(), getColPos()-1};
-                moves.add(lmove);
-            }
+public class Block {
+    private final int rows, cols;
+    private int rowpos, colpos;
 
-            if (checkMoveRight(tray)){
-                int[] rmove = {getRowPos(), getColPos(), getRowPos(), getColPos()+1};
-                moves.add(rmove);
-            }
-            
-            if (checkMoveUp(tray)){
-                int[] umove = {getRowPos(), getColPos(), getRowPos()-1, getColPos()};
-                moves.add(umove);
-            }
-            
-            if (checkMoveDown(tray)){
-                int[] dmove = {getRowPos(), getColPos(), getRowPos()+1, getColPos()};
-                moves.add(dmove);
-            }
-            
-            return moves;
+    public Block(int r, int c, int rp, int cp) {
+        rows = r;
+        cols = c;
+        rowpos = rp;
+        colpos = cp;
+    }
+
+    public ArrayList<int[]> findMoves(int[][] tray) {
+        ArrayList<int[]> moves = new ArrayList();
+        //check if the block can move up, down, left, or right
+        //add to moves if possible
+        if (checkMoveLeft(tray)){
+            moves.add(new int[]{rowpos, colpos, rowpos, colpos-1});
         }
-        
-        private boolean checkMoveLeft(int[][] tray){
-            //returns false if in the leftmost row
-            if (getColPos() == 0) return false;
-            //goes through all the rows the block is in and returns false if the space left of it is occupied
-            for (int i = getRowPos(); i < getRowPos() + getRows(); i++){
-                if (tray[i][getColPos()-1] != 0) return false;
-            }
-            //returns true otherwise
-            return true;
+        if (checkMoveRight(tray)){
+            moves.add(new int[]{rowpos, colpos, rowpos, colpos+1});
         }
-        
-        private boolean checkMoveRight(int[][] tray){
-            //returns false if in the rightmost column
-            if (this.getColPos() + this.getCols() >= tray[0].length) return false;
-            //goes through all the rows the block is in and returns false if the space right of it is occupied
-            for (int i = getRowPos(); i < getRowPos() + getRows(); i++){
-                if (tray[i][getColPos()+getCols()] != 0) return false;
-            }
-            //returns true otherwise
-            return true;
+        if (checkMoveUp(tray)){
+            moves.add(new int[]{rowpos, colpos, rowpos-1, colpos});
         }
-        
-        private boolean checkMoveUp(int[][] tray){
-            //returns false if in the highest row
-            if (getRowPos() == 0) return false;
-            //goes through all the columns the block is in and returns false if the space above it is occupied
-            for (int i = getColPos(); i < getColPos() + getCols(); i++){
-                if (tray[getRowPos()-1][i] != 0) return false;
-            }
-            //returns true otherwise
-            return true;
+        if (checkMoveDown(tray)){
+            moves.add(new int[]{rowpos, colpos, rowpos+1, colpos});
         }
-        
-        private boolean checkMoveDown(int[][] tray){
-            //returns false if in the lowest row
-            if (getRowPos() + getRows() >= tray.length) return false;
-            //goes through all the columns the block is in and returns false if the space below it is occupied
-            for (int i = getColPos(); i < getColPos() + getCols(); i++){
-                if (tray[getRowPos()+getRows()][i] != 0) return false;
-            }
-            //returns true otherwise
-            return true;
-        }
-        
-        @Override
-        public boolean equals(Object obj) {
-            if (obj==this) {
-                return true;
-            }
-            if (obj.getClass() != getClass() || obj==null) {
-                return false;
-            }
-            Block other = (Block)obj; // this is prob bad but i got it from stackexchange
-            if (rows==other.rows && cols==other.cols && rowpos==other.rowpos && colpos==other.colpos) {
-                return true;
-            }
+        return moves;
+    }
+
+    private boolean checkMoveLeft(int[][] tray){
+        //returns false if in the leftmost row
+        if (getColPos() == 0) {
             return false;
         }
-        
-        @Override
-        // bad
-        public int hashCode() {
-              int sum = 1;
-              sum = sum*31 + rows;
-              sum = sum*31 + cols;
-              sum = sum*31 + rowpos;
-              sum = sum*31 + colpos;
-              return sum;
-//            int hash;
-//            hash = 13*rows + 17*cols + 19*rowpos + 29*colpos;
-//            return hash;
+        //goes through all the rows the block is in and returns false if the space left of it is occupied
+        for (int i = getRowPos(); i < getRowPos() + getRows(); i++){
+            if (tray[i][getColPos()-1] != 0) {
+                return false;
+            }
         }
-        
-        public String toString() {
-            return rows + " " + cols + " " + rowpos + " " + colpos;
-        }
-        
-        // validity checks?
-        public void setRowPos(int r) {
-            rowpos = r;
-        }
-        
-        public void setColPos(int c) {
-            colpos = c;
-        }
-        
-        // should these fields just be public?
-        public int getRows() {
-            return rows;
-        }
-        
-        public int getCols() {
-            return cols;
-        }
-        
-        public int getRowPos() {
-            return rowpos;
-        }
-        
-        public int getColPos() {
-            return colpos;
-        }  
+        //returns true otherwise
+        return true;
     }
+
+    private boolean checkMoveRight(int[][] tray){
+        //returns false if in the rightmost column
+        if (this.getColPos() + this.getCols() >= tray[0].length) {
+            return false;
+        }
+        //goes through all the rows the block is in and returns false if the space right of it is occupied
+        for (int i = getRowPos(); i < getRowPos() + getRows(); i++){
+            if (tray[i][getColPos()+getCols()] != 0) {
+                return false;
+            }
+        }
+        //returns true otherwise
+        return true;
+    }
+
+    private boolean checkMoveUp(int[][] tray){
+        //returns false if in the highest row
+        if (getRowPos() == 0) {
+            return false;
+        }
+        //goes through all the columns the block is in and returns false if the space above it is occupied
+        for (int i = getColPos(); i < getColPos() + getCols(); i++){
+            if (tray[getRowPos()-1][i] != 0) {
+                return false;
+            }
+        }
+        //returns true otherwise
+        return true;
+    }
+
+    private boolean checkMoveDown(int[][] tray){
+        //returns false if in the lowest row
+        if (getRowPos() + getRows() >= tray.length) {
+            return false;
+        }
+        //goes through all the columns the block is in and returns false if the space below it is occupied
+        for (int i = getColPos(); i < getColPos() + getCols(); i++){
+            if (tray[getRowPos()+getRows()][i] != 0) {
+                return false;
+            }
+        }
+        //returns true otherwise
+        return true;
+    }
+
+    public Block copy() {
+        return new Block(rows, cols, rowpos, colpos);
+    }
+
+    @Override
+    public int hashCode() {
+          int sum = 1;
+          sum = sum*31 + rows;
+          sum = sum*31 + cols;
+          sum = sum*31 + rowpos;
+          sum = sum*31 + colpos;
+          return sum;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj == null || !(obj instanceof Block)) {
+            return false;
+        }
+        Block other = (Block)obj;
+        return (this.rows==other.rows && this.cols==other.cols && this.rowpos==other.rowpos && this.colpos==other.colpos);
+    }
+
+    // debug method, remove in final possibly
+    public String toString() {
+        return rows + " " + cols + " " + rowpos + " " + colpos;
+    }
+
+    public void setRowColPos(int r, int c) {
+        rowpos = r;
+        colpos = c;
+    }
+
+    public int getRows() {
+        return rows;
+    }
+
+    public int getCols() {
+        return cols;
+    }
+
+    public int getRowPos() {
+        return rowpos;
+    }
+
+    public int getColPos() {
+        return colpos;
+    }  
+}

@@ -3,8 +3,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-// I removed all checks for invalid data so hopefully we can assume that data read in will be good.
-
 public class Solver {
     // args[0] is the filename of the initial puzzle configuration
     // args[1] is the filename of the goal	
@@ -13,9 +11,7 @@ public class Solver {
         // implement option debugging messages?
         
         // i really dont know whats supposed to be in try and what isnt
-        try {
-            // should we make a fillTray method so this code doesn't look so redundant?
-            
+        try {            
             // Intializing the game tray
             BufferedReader in1 = new BufferedReader(new FileReader(args[0]));
             String line = in1.readLine();
