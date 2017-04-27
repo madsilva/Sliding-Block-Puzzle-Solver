@@ -30,7 +30,8 @@ if we could find out some way to calculate degrees of similarity/closeness to th
 public class Tray {
     private static int rows, cols;
     private int[][] tray;
-    private int[][] lastIsOK;
+    private int[][] lastIsOK; // this is very questionable
+    // i did this so that we can use the 2d arrays made by isOK while still having isOK return only booleans
     private HashMap<Coord, Block> blocks;
     private ArrayList<int[]> appliedMoves;
     private static HashSet<Tray> visited;
@@ -42,20 +43,20 @@ public class Tray {
         // note that tray is already filled with 0s
         tray = new int[r][c]; 
         blocks = new HashMap();
-        appliedMoves = new ArrayList();
         visited = new HashSet();
+        appliedMoves = new ArrayList();
     }
     
     // making a tray that is 1 move different than a parent tray for  
     // creating a tree of trays
     public Tray(Tray parent, int[] move) {
         blocks = new HashMap();
-        // filling in blocks with copies of the parent's Coord:Block pairs
         for (Coord c : parent.blocks.keySet()) {
+            Coord newCoord = c.copy();
             Block newBlock = parent.blocks.get(c).copy();
-            blocks.put(c.copy(), newBlock);
+            blocks.put(newCoord, newBlock);
         }
-        // moveBlock sets tray
+        // moveblock creates the new tray
         moveBlock(move);
         appliedMoves = new ArrayList(parent.appliedMoves);
         appliedMoves.add(move);
@@ -76,10 +77,10 @@ public class Tray {
 
     private TreeNode recurse(TreeNode<Tray> n, Tray goal, int c) {
         // if the node contains a tray that meets the goal, return the node
-//        if (n.getData().checkGoal(goal)) {
-//            System.out.println("fucking hell");
-//            return n;
-//        }
+        if (n.getData().checkGoal(goal)) {
+            System.out.println("fucking hell");
+            return n;
+        }
         // i hope its okay that i removed the else here, i dont think its needed
         //System.out.println("parent tray with # of parents: " + c + " " + "hash: " + n.getData().hashCode()+ " " + n.getData().printTray());
         ArrayList<int[]> possibleMoves = (n.getData().findMoves());
@@ -111,6 +112,24 @@ public class Tray {
         //System.out.println("Reaching null");
         return null;
     }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (obj==this) {
+            return true;
+        }
+        if (obj.getClass() != getClass() || obj==null) {
+            return false;
+        }
+        Tray other = (Tray)obj;
+        // questionable
+        return other.getBlocks().equals(blocks);
+    }
+    
+    @Override
+    public int hashCode() {
+        return blocks.hashCode();
+    }
      
     // this method returns an arraylist of every possible move for each block
     private ArrayList<int[]> findMoves() {
@@ -125,9 +144,10 @@ public class Tray {
         // removing the block to be moved from the map so we can update its coords
         // and return it with an updated key
         Block b = blocks.remove(new Coord(move[0], move[1]));
-        b.setRowColPos(move[2], move[3]);
+        b.setRowPos(move[2]);
+        b.setColPos(move[3]);
         blocks.put(new Coord(move[2], move[3]), b);
-        // updating the tray
+        // how the fuck do we update the tray
         if (isOk()) {
             tray = lastIsOK;
         }
@@ -140,15 +160,17 @@ public class Tray {
     // the goal tray are in the correct configuration in the game tray
     // this does NOT check if two trays are equal
     public boolean checkGoal(Tray goal) {
-        // go through the blocks in goal
+        // go thru this.blocks and then go thru goal and see if each block in goal matches a block in this
+        // how is this not going to run in n*m lmao
         for (Block g : goal.getBlocks().values()) {
-            Coord findKey = new Coord(g.getRowPos(), g.getColPos());
-            // getting the block in the game tray that's has the same coords as the block in the goal tray,
-            // if there is one
-            Block valBlock = blocks.get(findKey);
-            // if the block in the game tray at those coords doesn't equal the block in the goal tray, 
-            // the game tray has not met the goal
-            if (!g.equals(valBlock)) {
+            boolean found = false;
+            for (Block b : blocks.values()) {
+                if (b.equals(g)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
                 return false;
             }
         }
@@ -180,8 +202,8 @@ public class Tray {
     // If any of the given block values are invalid it will not be added.
     // *Block data input format: rows, columns, upper left row, upper left column
     public boolean addBlock(String line) {
-        // get block data from the given string
         String [] vals = line.split(" ");
+        // how to bulk convert string ary to int? this is so ugly
         int rows = Integer.parseInt(vals[0]);
         int cols = Integer.parseInt(vals[1]);
         int rowsPos = Integer.parseInt(vals[2]);
@@ -191,16 +213,19 @@ public class Tray {
         Block b = new Block(rows, cols, rowsPos, colsPos);
         Coord bCoord = new Coord(rowsPos, colsPos);
         blocks.put(bCoord, b);
-        // check if new HashMap makes a valid board
         if (!isOk()) {
-            // if board is invalid, remove the new block and don't update the array
             blocks.remove(bCoord);
             return false;
         }
-        else {
-            // if board is valid, update the array with the one generated by isOk
-            tray = lastIsOK;
-        }
+        tray = lastIsOK;
+        
+//        // fill in tray with 1s in blocks position
+//        for (int r = b.getRowPos(); r<b.getRows()+b.getRowPos(); r++) {
+//            for (int c = b.getColPos(); c<b.getCols() + b.getColPos(); c++) {
+//                // we should not have to check if the spot is free bc isOk should have already done that
+//                tray[r][c] = 1;
+//            }
+//        }
         return true;
     }
     

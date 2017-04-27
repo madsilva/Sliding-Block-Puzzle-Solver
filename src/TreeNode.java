@@ -1,25 +1,28 @@
 
 import java.util.ArrayList;
 
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
 /**
  *
  * @author madsilva
- * @author jgeati
  */
-
 public class TreeNode<T> {
     private T data;
     private TreeNode parent;
     private ArrayList<TreeNode> children;
         
-    // constructor for creating a root node with data d
+    // creating the root
     public TreeNode(T d) {
         data = d;
         parent = null;
         children = new ArrayList();
     }
     
-    // constructor for creating a child node with parent p and data d
     public TreeNode(T d, TreeNode p) {
         data = d;
         parent = p;
@@ -36,5 +39,10 @@ public class TreeNode<T> {
     
     public T getData() {
         return data;
+    }
+    
+    // if node is root returns null
+    public TreeNode getParent() {
+        return parent;
     }
 }
