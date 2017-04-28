@@ -74,7 +74,7 @@ public class Tray {
     }
     
 
-    private TreeNode depthFirst(TreeNode<Tray> n, Tray goal, int c) {
+    private TreeNode depthFirst(TreeNode<Tray> n, Tray goal) {
         // if the node contains a tray that meets the goal, return the node
         if (n.getData().checkGoal(goal)) {
             System.out.println("fucking hell");
@@ -96,7 +96,11 @@ public class Tray {
         ArrayList<TreeNode> nodes = n.getChildren();
             // calls depthFirst on all the children and returns one of them if they solve the solution
             for (TreeNode t : nodes) {
-                TreeNode returned = depthFirst(t, goal, c+1);
+                TreeNode returned = null;
+                try {
+                    returned = depthFirst(t, goal);
+                } catch(StackOverflowError e){
+                }
                 // this makes sure null is only returned if all options have been checked
                 if (returned != null) return returned;
             }
