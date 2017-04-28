@@ -18,9 +18,9 @@ import java.util.ArrayList;
         public ArrayList<int[]> findMoves(int[][] tray) {
             ArrayList<int[]> moves = new ArrayList();
             
-            //called on the block
-            //check if the block can move up, down, left, or right
-            //add to moves if possible
+            // called on the block
+            // check if the block can move up, down, left, or right
+            // add to moves if possible
             if (checkMoveLeft(tray)){
                 int[] lmove = {getRowPos(), getColPos(), getRowPos(), getColPos()-1};
                 moves.add(lmove);
@@ -45,46 +45,46 @@ import java.util.ArrayList;
         }
         
         private boolean checkMoveLeft(int[][] tray){
-            //returns false if in the leftmost row
+            //r eturns false if in the leftmost column
             if (getColPos() == 0) return false;
             //goes through all the rows the block is in and returns false if the space left of it is occupied
             for (int i = getRowPos(); i < getRowPos() + getRows(); i++){
                 if (tray[i][getColPos()-1] != 0) return false;
             }
-            //returns true otherwise
+            // returns true otherwise
             return true;
         }
         
         private boolean checkMoveRight(int[][] tray){
-            //returns false if in the rightmost column
+            // returns false if in the rightmost column
             if (this.getColPos() + this.getCols() >= tray[0].length) return false;
-            //goes through all the rows the block is in and returns false if the space right of it is occupied
+            // goes through all the rows the block is in and returns false if the space right of it is occupied
             for (int i = getRowPos(); i < getRowPos() + getRows(); i++){
                 if (tray[i][getColPos()+getCols()] != 0) return false;
             }
-            //returns true otherwise
+            // returns true otherwise
             return true;
         }
         
         private boolean checkMoveUp(int[][] tray){
-            //returns false if in the highest row
+            // returns false if in the highest row
             if (getRowPos() == 0) return false;
-            //goes through all the columns the block is in and returns false if the space above it is occupied
+            // goes through all the columns the block is in and returns false if the space above it is occupied
             for (int i = getColPos(); i < getColPos() + getCols(); i++){
                 if (tray[getRowPos()-1][i] != 0) return false;
             }
-            //returns true otherwise
+            // returns true otherwise
             return true;
         }
         
         private boolean checkMoveDown(int[][] tray){
-            //returns false if in the lowest row
+            // returns false if in the lowest row
             if (getRowPos() + getRows() >= tray.length) return false;
-            //goes through all the columns the block is in and returns false if the space below it is occupied
+            // goes through all the columns the block is in and returns false if the space below it is occupied
             for (int i = getColPos(); i < getColPos() + getCols(); i++){
                 if (tray[getRowPos()+getRows()][i] != 0) return false;
             }
-            //returns true otherwise
+            // returns true otherwise
             return true;
         }
         
@@ -125,7 +125,6 @@ import java.util.ArrayList;
         }
 
         
-        // should these fields just be public?
         public int getRows() {
             return rows;
         }

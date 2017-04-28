@@ -17,12 +17,9 @@ by their coordinates when it's time to move them.
 Goal trays are represented as Trays because of the convenience of the preexisting addBlock method and Block map.  
 */
 
-/*CURRENT ERRORS:
-see comments in recurse
-*/
 
 /*
-some possible effciency improvements for the future when everything isnt fucked
+some possible effciency improvements for the future 
 clear data of parent trays once all children are generated and its clear the parent isnt the goal
 change our tray 2d array to a bitset
 if we could find out some way to calculate degrees of similarity/closeness to the solution, we could implement a priority queue for child nodes?
@@ -77,41 +74,32 @@ public class Tray {
     }
     
 
-    private TreeNode recurse(TreeNode<Tray> n, Tray goal, int c) {
+    private TreeNode depthFirst(TreeNode<Tray> n, Tray goal, int c) {
         // if the node contains a tray that meets the goal, return the node
         if (n.getData().checkGoal(goal)) {
             System.out.println("fucking hell");
             return n;
         }
-        // i hope its okay that i removed the else here, i dont think its needed
-        //System.out.println("parent tray with # of parents: " + c + " " + "hash: " + n.getData().hashCode()+ " " + n.getData().printTray());
         ArrayList<int[]> possibleMoves = (n.getData().findMoves());
         for (int[] m : possibleMoves) {
             Tray possibleChild = new Tray(n.getData(), m);
-            //System.out.println("potential child with hash: " + newTray.hashCode() + " " + newTray.printTray());
+            // returns false if unable to add possibleChild 
+            // meaning it is already in the set
             if (visited.add(possibleChild)) {
-                //System.out.println("child with hash: " + possibleChild.hashCode() + " " + possibleChild.printTray());
                 n.addChild(possibleChild);
-                // adding the below if statement makes it work for SOME boards, not all
-                // although this is probably good because it saves time to check all generated children if they are the goal immedeately 
-                // instead of waiting till they come up in the stack
-                
-                // otherwise the issue is that trays that satify the goal are being looked at, and checked ("fucking hell" prints) but for some reason null is still getting returned???
-                // and i really dont know why at this point
-                
-                // note that when i drew the tree it was making, it seemed to be doing a depth first traversal- dont know if this is desireable or not
+                 // checks if the child satisfies the goal before adding calling it recursively
                  if (possibleChild.checkGoal(goal)) {
                     return new TreeNode(possibleChild);
                 }
             }
         }
         ArrayList<TreeNode> nodes = n.getChildren();
-        
+            // calls depthFirst on all the children and returns one of them if they solve the solution
             for (TreeNode t : nodes) {
-                TreeNode returned = recurse(t, goal, c+1);
+                TreeNode returned = depthFirst(t, goal, c+1);
+                // this makes sure null is only returned if all options have been checked
                 if (returned != null) return returned;
             }
-        //System.out.println("Reaching null");
         return null;
     }
     
@@ -123,26 +111,19 @@ public class Tray {
             ArrayList<int[]> possibleMoves = parent.getData().findMoves();
             for (int[] m : possibleMoves) {
                 Tray possibleChild = new Tray(parent.getData(), m);
-                if (possibleChild.checkGoal(goal)) {
-                        System.out.println(possibleChild.printTray());
-                        System.out.println("child blocks: ");
-                        for (Block b : possibleChild.blocks.values()) {
-                            System.out.println(b.toString());
-                        }
-                        System.out.println("goal blocks: ");
-                        for (Block b : goal.blocks.values()) {
-                            System.out.println(b.toString());
-                        System.out.println();
-                        }
-                        
+                // returns true if possibleChild is successfully added to set
+                // meaning the possibleChild hasn't been visited before
+                if (visited.add(possibleChild)) {
+                    //returns the child if it matches the goal
+                    if (possibleChild.checkGoal(goal)) {                     
                         return new TreeNode(possibleChild);
                     }
-                if (visited.add(possibleChild)) {
                     parent.addChild(possibleChild);
                     
                 }
             }
             ArrayList<TreeNode> nodes = parent.getChildren();
+            // adds all of the children to the queue
             for (TreeNode t:nodes) {
                 queue.add(t);
             }
