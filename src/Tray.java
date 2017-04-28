@@ -77,7 +77,6 @@ public class Tray {
     private TreeNode depthFirst(TreeNode<Tray> n, Tray goal) {
         // if the node contains a tray that meets the goal, return the node
         if (n.getData().checkGoal(goal)) {
-            System.out.println("fucking hell");
             return n;
         }
         ArrayList<int[]> possibleMoves = (n.getData().findMoves());
