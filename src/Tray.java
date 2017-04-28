@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 
 /**
  *
@@ -68,7 +69,7 @@ public class Tray {
     public ArrayList<int[]> solve(Tray goal) {
         TreeNode<Tray> root = new TreeNode(this);
         visited.add(this);
-        TreeNode<Tray> goalNode = recurse(root, goal, 0);
+        TreeNode<Tray> goalNode = breadthFirst(root, goal);
         if (goalNode == null) {
             return new ArrayList();
         }
@@ -112,6 +113,41 @@ public class Tray {
             }
         //System.out.println("Reaching null");
         return null;
+    }
+    
+    private TreeNode breadthFirst(TreeNode root, Tray goal) {
+        LinkedList<TreeNode<Tray>> queue = new LinkedList();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            TreeNode<Tray> parent = queue.remove();
+            ArrayList<int[]> possibleMoves = parent.getData().findMoves();
+            for (int[] m : possibleMoves) {
+                Tray possibleChild = new Tray(parent.getData(), m);
+                if (possibleChild.checkGoal(goal)) {
+                        System.out.println(possibleChild.printTray());
+                        System.out.println("child blocks: ");
+                        for (Block b : possibleChild.blocks.values()) {
+                            System.out.println(b.toString());
+                        }
+                        System.out.println("goal blocks: ");
+                        for (Block b : goal.blocks.values()) {
+                            System.out.println(b.toString());
+                        System.out.println();
+                        }
+                        
+                        return new TreeNode(possibleChild);
+                    }
+                if (visited.add(possibleChild)) {
+                    parent.addChild(possibleChild);
+                    
+                }
+            }
+            ArrayList<TreeNode> nodes = parent.getChildren();
+            for (TreeNode t:nodes) {
+                queue.add(t);
+            }
+        }
+          return null;  
     }
     
     @Override

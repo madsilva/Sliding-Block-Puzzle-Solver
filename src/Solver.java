@@ -64,6 +64,7 @@ public class Solver {
                     for (int[] move : moves) {
                         System.out.println(move[0] + " " + move[1] + " " + move[2] + " " + move[3]);
                     }
+                    System.out.println("number of moves: " + moves.size());
                 }
             }
         }
