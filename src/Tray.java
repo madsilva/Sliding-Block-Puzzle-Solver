@@ -19,16 +19,22 @@ Goal trays are represented as Trays because of the convenience of the preexistin
 
 
 /*
-some possible effciency improvements for the future 
-clear data of parent trays once all children are generated and its clear the parent isnt the goal
-change our tray 2d array to a bitset
-if we could find out some way to calculate degrees of similarity/closeness to the solution, we could implement a priority queue for child nodes?
+TODO:
+possibly implement priority queue which orders child trays to be looked at based on how close they are to the goal
+how close they are to the goal is determined by how many blocks match the goal
+would need to implement tray.compareTo for this to work
+
+make sure solve handles unsovable puzzles correctly - im not condfident about this, havent run enough tests
+
+possibly change goal tray representation
 */
 
+
 public class Tray {
-    private static int rows, cols;
+    private static int rows, cols, totalTrays;
+    private long maxMemory;
     private int[][] tray;
-    private int[][] lastIsOK;
+    private int[][] lastIsOk;
     private HashMap<Coord, Block> blocks;
     private ArrayList<int[]> appliedMoves;
     private static HashSet<Tray> visited;
@@ -42,6 +48,8 @@ public class Tray {
         blocks = new HashMap();
         appliedMoves = new ArrayList();
         visited = new HashSet();
+        totalTrays = 0;
+        maxMemory = 0;
     }
     
     // making a tray that is 1 move different than a parent tray for  
@@ -76,6 +84,7 @@ public class Tray {
 
     private TreeNode depthFirst(TreeNode<Tray> n, Tray goal) {
         // if the node contains a tray that meets the goal, return the node
+        totalTrays++;
         if (n.getData().checkGoal(goal)) {
             return n;
         }
@@ -111,6 +120,8 @@ public class Tray {
         queue.add(root);
         while (!queue.isEmpty()) {
             TreeNode<Tray> parent = queue.remove();
+            totalTrays++;
+            
             ArrayList<int[]> possibleMoves = parent.getData().findMoves();
             for (int[] m : possibleMoves) {
                 Tray possibleChild = new Tray(parent.getData(), m);
@@ -168,7 +179,7 @@ public class Tray {
         blocks.put(new Coord(move[2], move[3]), b);
         // updating the tray
         if (isOk()) {
-            tray = lastIsOK;
+            tray = lastIsOk;
         }
         else {
             blocks.remove(new Coord(move[2], move[3]));
@@ -205,7 +216,7 @@ public class Tray {
                 }
             }
         }
-        lastIsOK = newTray;
+        lastIsOk = newTray;
         return true;
     }
     
@@ -214,9 +225,8 @@ public class Tray {
     // If new block overlaps with other blocks it will not be added.
     // If any of the given block values are invalid it will not be added.
     // *Block data input format: rows, columns, upper left row, upper left column
-    public boolean addBlock(String line) {
+    public void addBlock(String line) {
         String [] vals = line.split(" ");
-        // how to bulk convert string ary to int? this is so ugly
         int rows = Integer.parseInt(vals[0]);
         int cols = Integer.parseInt(vals[1]);
         int rowsPos = Integer.parseInt(vals[2]);
@@ -227,14 +237,16 @@ public class Tray {
         Coord bCoord = new Coord(rowsPos, colsPos);
         blocks.put(bCoord, b);
         if (!isOk()) {
+            // if adding the block creates an invalid tray, remove it
             blocks.remove(bCoord);
-            return false;
         }
-        tray = lastIsOK;
-        return true;
+        else {
+            // update the tray with the last int[][] created by isOk
+            tray = lastIsOk;
+        }
     }
     
-    // this is prob a good idea for debugging - will not need for final
+    // debug method
     public String printTray() {
         String output = "Current game tray: \n";
         for (int r=0; r<rows;r++) {
@@ -246,6 +258,7 @@ public class Tray {
         return output;
     }
     
+    // debug method
     public String printGoal() {
         String output = "Goal tray: \n";
         output += hashCode() + "\n";
@@ -268,6 +281,10 @@ public class Tray {
     
     public int[][] getTray() {
         return tray;
+    }
+    
+    public int getTotalTrays() {
+        return totalTrays;
     }
     
     public int getRows() {

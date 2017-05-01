@@ -4,42 +4,72 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+
+/*
+TODO:
+need to implement some possible options 
+ideas for options:
+-omaxmemory
+return max memory used
+how to do this? use runtime.memory, check that every time we pop off queue, if memory currently used is > max memory, set max to that
+
+
+for totaltrays and maxmemory, make values in tray to hold them and keep track as we solve, then in solver, print them if requested
+
+need to make sure inputted arguments are valid before doing things with them
+*/
 public class Solver {
-    // args[0] is the filename of the initial puzzle configuration
-    // args[1] is the filename of the goal	
+    // args[n-1] is the filename of the initial puzzle configuration
+    // args[n] is the filename of the goal	
     public static void main(String[] args) {
+        // flags for -o args
+        boolean totalMoves = false;
+        boolean totalTrays = false;
+        boolean maxMemory = false;
         
-        
-        String[] oarguments = null;
-        String[] arguments = null;
+        String[] oArguments = null;
+        String[] fileArguments = null;
         for (String arg : args){
             // help menu if the first argument is help, exits program, assumes -h will be only argument
             if (arg.equals("-h")){
-                System.out.println("No options implemented (yet)");
+                String output = "Optional arguments:\n";
+                output += "-ototalmoves: Will print the total number of moves in the solution if one is found.\n";
+                output += "-ototaltrays: Will print the total number of trays looked at while searching for the solution.\n";
+                output+= "-omaxmemory: not implemented";
                 System.exit(0);
             }
             // finds main arguments
             if (!arg.substring(0, 1).equals("-")){
                 // separates arguments into separate arrays
                 if (!arg.equals(args[0]))
-                    oarguments = Arrays.copyOfRange(args, 0, Arrays.asList(args).indexOf(arg));
-                arguments = Arrays.copyOfRange(args, Arrays.asList(args).indexOf(arg), args.length);
+                    oArguments = Arrays.copyOfRange(args, 0, Arrays.asList(args).indexOf(arg));
+                fileArguments = Arrays.copyOfRange(args, Arrays.asList(args).indexOf(arg), args.length);
                 // stops looping
                 break;
             }
         }
         
-        // prints all optional arguments for debugging purposes
-        if (oarguments != null){
-            for (String arg : oarguments){
-                System.out.println(arg);
+        if (oArguments != null){
+            for (String arg : oArguments){
+                // this could be a case structure
+                if (arg.equals("-ototalmoves")) {
+                    totalMoves = true;
+                }
+                else if (arg.equals("-ototaltrays")) {
+                    totalTrays = true;
+                }
+                else if (arg.equals("-omaxmemory")) {
+                    maxMemory = true;
+                }
+                else {
+                    System.out.println("invalid option arg: " + arg);
+                }
             }
         }
         
         try {
-            
             // Intializing the game tray
-            BufferedReader in1 = new BufferedReader(new FileReader(arguments[0]));
+            BufferedReader in1 = new BufferedReader(new FileReader(fileArguments[0]));
             String line = in1.readLine();
             String[] lineVals = line.split(" ");
             Tray game = new Tray(Integer.parseInt(lineVals[0]), Integer.parseInt(lineVals[1]));
@@ -51,7 +81,7 @@ public class Solver {
             in1.close();
             // Intializing the goal tray
             Tray goal = new Tray(game.getRows(), game.getCols());
-            BufferedReader in2 = new BufferedReader(new FileReader(arguments[1]));
+            BufferedReader in2 = new BufferedReader(new FileReader(fileArguments[1]));
             line = in2.readLine();
             while (line != null) {
                 goal.addBlock(line);
@@ -78,11 +108,24 @@ public class Solver {
                     for (int[] move : moves) {
                         System.out.println(move[0] + " " + move[1] + " " + move[2] + " " + move[3]);
                     }
+                    // print out further output depening on the given option args
+                    if (totalMoves) {
+                        System.out.println("Total moves in solution: " + moves.size());
+                    }
+                    if (totalTrays) {
+                        System.out.println("Total trays looked at: " + game.getTotalTrays());
+                    }
+                    if (maxMemory) {
+                      // not implemented  
+                    }
+                    //System.out.println(Runtime.getRuntime().totalMemory());
+                    //System.out.println(Runtime.getRuntime().maxMemory());
+                    //System.out.println(Runtime.getRuntime().freeMemory());
                 }
             }
         }
         catch (IOException e) {
-            System.out.println("Invalid Argument");
+            System.out.println("Invalid filename");
         }  
     }	
 }
