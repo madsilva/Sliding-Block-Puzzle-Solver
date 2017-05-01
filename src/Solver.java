@@ -33,9 +33,10 @@ public class Solver {
             // help menu if the first argument is help, exits program, assumes -h will be only argument
             if (arg.equals("-h")){
                 String output = "Optional arguments:\n";
-                output += "-ototalmoves: Will print the total number of moves in the solution if one is found.\n";
-                output += "-ototaltrays: Will print the total number of trays looked at while searching for the solution.\n";
+                output += "-ototalmoves: Prints the total number of moves in the solution if one is found.\n";
+                output += "-ototaltrays: Prints the total number of trays looked at while searching for the solution.\n";
                 output+= "-omaxmemory: not implemented";
+                System.out.println(output);
                 System.exit(0);
             }
             // finds main arguments
