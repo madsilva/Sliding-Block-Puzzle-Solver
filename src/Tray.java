@@ -9,30 +9,8 @@ import java.util.LinkedList;
  * @author jgeati
  */
 
-/* Design of Tray:
-The Tray class holds data for the game board in 2 data structures. The first is a 2D integer array of 0s and 1s representing where blocks are and are not.
-This allows us to easily find empty space where potential moves could be made.
-The second is a HashMap where Coord objects, which hold row and column coords, are keys to each Block object on the tray. This allows for easy lookup of blocks
-by their coordinates when it's time to move them.
-Goal trays are represented as Trays because of the convenience of the preexisting addBlock method and Block map.  
-*/
-
-
-/*
-TODO:
-possibly implement priority queue which orders child trays to be looked at based on how close they are to the goal
-how close they are to the goal is determined by how many blocks match the goal
-would need to implement tray.compareTo for this to work
-
-make sure solve handles unsovable puzzles correctly - im not condfident about this, havent run enough tests
-
-possibly change goal tray representation
-*/
-
-
 public class Tray {
     private static int rows, cols, totalTrays;
-    private long maxMemory;
     private int[][] tray;
     private int[][] lastIsOk;
     private HashMap<Coord, Block> blocks;
@@ -49,7 +27,6 @@ public class Tray {
         appliedMoves = new ArrayList();
         visited = new HashSet();
         totalTrays = 0;
-        maxMemory = 0;
     }
     
     // making a tray that is 1 move different than a parent tray for  
@@ -78,43 +55,9 @@ public class Tray {
         if (goalNode == null) {
             return new ArrayList();
         }
-        return goalNode.getData().getAppliedMoves();
+        return goalNode.getData().appliedMoves;
     }
-    
-
-    private TreeNode depthFirst(TreeNode<Tray> n, Tray goal) {
-        // if the node contains a tray that meets the goal, return the node
-        totalTrays++;
-        if (n.getData().checkGoal(goal)) {
-            return n;
-        }
-        ArrayList<int[]> possibleMoves = (n.getData().findMoves());
-        for (int[] m : possibleMoves) {
-            Tray possibleChild = new Tray(n.getData(), m);
-            // returns false if unable to add possibleChild 
-            // meaning it is already in the set
-            if (visited.add(possibleChild)) {
-                n.addChild(possibleChild);
-                 // checks if the child satisfies the goal before adding calling it recursively
-                 if (possibleChild.checkGoal(goal)) {
-                    return new TreeNode(possibleChild);
-                }
-            }
-        }
-        ArrayList<TreeNode> nodes = n.getChildren();
-            // calls depthFirst on all the children and returns one of them if they solve the solution
-            for (TreeNode t : nodes) {
-                TreeNode returned = null;
-                try {
-                    returned = depthFirst(t, goal);
-                } catch(StackOverflowError e){
-                }
-                // this makes sure null is only returned if all options have been checked
-                if (returned != null) return returned;
-            }
-        return null;
-    }
-    
+  
     private TreeNode breadthFirst(TreeNode root, Tray goal) {
         LinkedList<TreeNode<Tray>> queue = new LinkedList();
         queue.add(root);
@@ -143,6 +86,38 @@ public class Tray {
             }
         }
           return null;  
+    }
+    
+    // Recursive algorithm that generates and searches a tree of trays depth first to find a solution.
+    // This was our initial algorithm for finding solutions, but we found the one above 
+    // generally worked better.
+    private TreeNode depthFirst(TreeNode<Tray> n, Tray goal) {
+        totalTrays++;
+        ArrayList<int[]> possibleMoves = (n.getData().findMoves());
+        for (int[] m : possibleMoves) {
+            Tray possibleChild = new Tray(n.getData(), m);
+            // returns false if unable to add possibleChild 
+            // meaning it is already in the set
+            if (visited.add(possibleChild)) {
+                n.addChild(possibleChild);
+                 // checks if the child satisfies the goal before adding calling it recursively
+                 if (possibleChild.checkGoal(goal)) {
+                    return new TreeNode(possibleChild);
+                }
+            }
+        }
+        ArrayList<TreeNode> nodes = n.getChildren();
+            // calls depthFirst on all the children and returns one of them if they solve the solution
+            for (TreeNode t : nodes) {
+                TreeNode returned = null;
+                try {
+                    returned = depthFirst(t, goal);
+                } catch(StackOverflowError e){
+                }
+                // this makes sure null is only returned if all options have been checked
+                if (returned != null) return returned;
+            }
+        return null;
     }
     
     @Override
@@ -201,9 +176,11 @@ public class Tray {
         return true;
     }
 
-    // looks at the current block map of the tray and checks if there is overlap 
+    // Looks at the current block map of the tray and checks if there is overlap 
     // by creating a 2d array of 0s and attempting to add blocks as 1s - if there 
     // is more than one 1 in a space, the configuration is invalid.
+    // if no blocks overlap, lastIsOk is set to the new 2d array to be used to update
+    // the tray's 2d array in other methods.
     public boolean isOk(){
         int[][] newTray = new int[rows][cols];
         for (Block b : blocks.values()) {
@@ -221,9 +198,7 @@ public class Tray {
     }
     
     // Takes a line of input* representing a block and adds it to the tray.
-    // Returns true or false if the block was successfully added.
     // If new block overlaps with other blocks it will not be added.
-    // If any of the given block values are invalid it will not be added.
     // *Block data input format: rows, columns, upper left row, upper left column
     public void addBlock(String line) {
         String [] vals = line.split(" ");
@@ -236,13 +211,13 @@ public class Tray {
         Block b = new Block(rows, cols, rowsPos, colsPos);
         Coord bCoord = new Coord(rowsPos, colsPos);
         blocks.put(bCoord, b);
-        if (!isOk()) {
-            // if adding the block creates an invalid tray, remove it
-            blocks.remove(bCoord);
-        }
-        else {
+        if (isOk()) {
             // update the tray with the last int[][] created by isOk
             tray = lastIsOk;
+        }
+        else {
+            // if adding the block creates an invalid tray, remove it
+            blocks.remove(bCoord);
         }
     }
     
@@ -269,18 +244,6 @@ public class Tray {
             output += "\n";
         }
         return output;
-    }
-    
-    public ArrayList<int[]> getAppliedMoves() {
-        return appliedMoves;
-    }    
-    
-    public HashMap<Coord, Block> getBlocks() {
-        return blocks;
-    }
-    
-    public int[][] getTray() {
-        return tray;
     }
     
     public int getTotalTrays() {

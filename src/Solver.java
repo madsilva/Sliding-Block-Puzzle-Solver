@@ -4,29 +4,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+/**
+ *
+ * @author madsilva
+ * @author jgeati
+ */
 
-/*
-TODO:
-need to implement some possible options 
-ideas for options:
--omaxmemory
-return max memory used
-how to do this? use runtime.memory, check that every time we pop off queue, if memory currently used is > max memory, set max to that
-
-
-for totaltrays and maxmemory, make values in tray to hold them and keep track as we solve, then in solver, print them if requested
-
-need to make sure inputted arguments are valid before doing things with them
-*/
-public class Solver {
-    // args[n-1] is the filename of the initial puzzle configuration
-    // args[n] is the filename of the goal	
+public class Solver {	
     public static void main(String[] args) {
-        // flags for -o args
-        boolean totalMoves = false;
-        boolean totalTrays = false;
-        boolean maxMemory = false;
-        
+        // start by processing the given args
+        // args[n-1] is the filename of the initial puzzle configuration
+        // args[n] is the filename of the goal
         String[] oArguments = null;
         String[] fileArguments = null;
         for (String arg : args){
@@ -35,24 +23,33 @@ public class Solver {
                 String output = "Optional arguments:\n";
                 output += "-ototalmoves: Prints the total number of moves in the solution if one is found.\n";
                 output += "-ototaltrays: Prints the total number of trays looked at while searching for the solution.\n";
-                output += "-omaxmemory: Prints the maximum memory the solver uses.";
+                output += "-omaxmemory: Prints the maximum memory the solver uses.\n";
+                output += "-oruntime: Prints the runtime in seconds.";
                 System.out.println(output);
                 System.exit(0);
             }
             // finds main arguments
             if (!arg.substring(0, 1).equals("-")){
                 // separates arguments into separate arrays
-                if (!arg.equals(args[0]))
+                if (!arg.equals(args[0])) {
                     oArguments = Arrays.copyOfRange(args, 0, Arrays.asList(args).indexOf(arg));
+                }
                 fileArguments = Arrays.copyOfRange(args, Arrays.asList(args).indexOf(arg), args.length);
                 // stops looping
                 break;
             }
         }
         
+        // flags for -o args
+        boolean totalMoves = false;
+        boolean totalTrays = false;
+        boolean maxMemory = false;
+        boolean runTime = false;
+        // needed if runTime is true
+        long start = System.currentTimeMillis();
+        // going thru options args and turning on the appropriate flags
         if (oArguments != null){
             for (String arg : oArguments){
-                // this could be a case structure
                 if (arg.equals("-ototalmoves")) {
                     totalMoves = true;
                 }
@@ -61,6 +58,9 @@ public class Solver {
                 }
                 else if (arg.equals("-omaxmemory")) {
                     maxMemory = true;
+                }
+                else if (arg.equals("-oruntime")) {
+                    runTime = true;
                 }
                 else {
                     System.out.println("invalid option arg: " + arg);
@@ -119,6 +119,9 @@ public class Solver {
                     if (maxMemory) {
                         long bytes = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
                         System.out.println("Max memory used: " + (bytes/1000000) + " megabytes");
+                    }
+                    if (runTime) {
+                        System.out.println("Solver run time: " + (System.currentTimeMillis()-start)/1000 + " seconds");
                     }
                 }
             }

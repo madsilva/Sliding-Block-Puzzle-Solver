@@ -1,4 +1,3 @@
-
 import java.util.ArrayList;
 
 /**
@@ -8,25 +7,15 @@ import java.util.ArrayList;
  */
 public class TreeNode<T> {
     private T data;
-    private TreeNode parent;
     private ArrayList<TreeNode> children;
         
-    // creating the root
     public TreeNode(T d) {
         data = d;
-        parent = null;
         children = new ArrayList();
     }
-    
-    // making a child node with parent p
-    public TreeNode(T d, TreeNode p) {
-        data = d;
-        parent = p;
-        children = new ArrayList();
-    }
-    
+ 
     public void addChild(T c) {
-        children.add(new TreeNode(c, this));
+        children.add(new TreeNode(c));
     }
     
     public ArrayList<TreeNode> getChildren() {

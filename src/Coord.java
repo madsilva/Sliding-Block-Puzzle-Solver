@@ -32,7 +32,6 @@ public class Coord {
         return (other.row == this.row && other.col == this.col);
     }
 
-    // validity checks?
     public void setRow(int r) {
         row = r;
     }
@@ -41,7 +40,6 @@ public class Coord {
         col = c;
     }
 
-    // we might not need these, not sure
     public int getRow() {
         return row;
     }
