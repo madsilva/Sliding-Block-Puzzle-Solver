@@ -35,7 +35,7 @@ public class Solver {
                 String output = "Optional arguments:\n";
                 output += "-ototalmoves: Prints the total number of moves in the solution if one is found.\n";
                 output += "-ototaltrays: Prints the total number of trays looked at while searching for the solution.\n";
-                output+= "-omaxmemory: not implemented";
+                output += "-omaxmemory: Prints the maximum memory the solver uses.";
                 System.out.println(output);
                 System.exit(0);
             }
@@ -117,11 +117,8 @@ public class Solver {
                         System.out.println("Total trays looked at: " + game.getTotalTrays());
                     }
                     if (maxMemory) {
-                      // not implemented  
+                        System.out.println("Max memory used: " + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) + " bytes");
                     }
-                    //System.out.println(Runtime.getRuntime().totalMemory());
-                    //System.out.println(Runtime.getRuntime().maxMemory());
-                    //System.out.println(Runtime.getRuntime().freeMemory());
                 }
             }
         }
