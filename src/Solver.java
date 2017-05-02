@@ -117,7 +117,8 @@ public class Solver {
                         System.out.println("Total trays looked at: " + game.getTotalTrays());
                     }
                     if (maxMemory) {
-                        System.out.println("Max memory used: " + (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) + " bytes");
+                        long bytes = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+                        System.out.println("Max memory used: " + (bytes/1000000) + " megabytes");
                     }
                 }
             }
