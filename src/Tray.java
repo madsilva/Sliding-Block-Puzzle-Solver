@@ -9,6 +9,11 @@ import java.util.LinkedList;
  * @author jgeati
  */
 
+/* 
+This class is used to represent a game tray. Much more information can be found in
+our HW8 report concerning this class's design.
+*/
+
 public class Tray {
     private static int rows, cols, totalTrays;
     private int[][] tray;
@@ -17,7 +22,7 @@ public class Tray {
     private ArrayList<int[]> appliedMoves;
     private static HashSet<Tray> visited;
     
-    // This constructor is used to intialize the "mother tray", which holds the inital configuration
+    // This constructor is used to intialize the "mother tray", which holds the inital configuration.
     public Tray(int r, int c) {
         rows = r;
         cols = c;
@@ -50,6 +55,7 @@ public class Tray {
     // start row, start col, end row, end col
     public ArrayList<int[]> solve(Tray goal) {
         TreeNode<Tray> root = new TreeNode(this);
+        // adding the first tray to visited so it's not looked at again
         visited.add(this);
         TreeNode<Tray> goalNode = breadthFirst(root, goal);
         if (goalNode == null) {
@@ -58,13 +64,15 @@ public class Tray {
         return goalNode.getData().appliedMoves;
     }
   
+    // This method builds and seaches a tree of trays breadth first, so all the children
+    // of a given parent are looked at before any children's children are. 
     private TreeNode breadthFirst(TreeNode root, Tray goal) {
         LinkedList<TreeNode<Tray>> queue = new LinkedList();
         queue.add(root);
         while (!queue.isEmpty()) {
             TreeNode<Tray> parent = queue.remove();
             totalTrays++;
-            
+            // generating possible moves for the current tray
             ArrayList<int[]> possibleMoves = parent.getData().findMoves();
             for (int[] m : possibleMoves) {
                 Tray possibleChild = new Tray(parent.getData(), m);
@@ -75,22 +83,22 @@ public class Tray {
                     if (possibleChild.checkGoal(goal)) {                     
                         return new TreeNode(possibleChild);
                     }
+                    // otherwise add it to the parent's children to be looked at later
                     parent.addChild(possibleChild);
-                    
                 }
             }
+            // adding all of the children to the queue
             ArrayList<TreeNode> nodes = parent.getChildren();
-            // adds all of the children to the queue
-            for (TreeNode t:nodes) {
+            for (TreeNode t : nodes) {
                 queue.add(t);
             }
         }
-          return null;  
+        return null;  
     }
     
     // Recursive algorithm that generates and searches a tree of trays depth first to find a solution.
     // This was our initial algorithm for finding solutions, but we found the one above 
-    // generally worked better.
+    // generally worked better. We kept this so we could compare it to the new one.
     private TreeNode depthFirst(TreeNode<Tray> n, Tray goal) {
         totalTrays++;
         ArrayList<int[]> possibleMoves = (n.getData().findMoves());
@@ -137,7 +145,7 @@ public class Tray {
         return other.blocks.equals(this.blocks);
     }
      
-    // this method returns an arraylist of every possible move for each block
+    // This method returns an arraylist of every possible move for each block in the tray.
     private ArrayList<int[]> findMoves() {
         ArrayList<int[]> moves = new ArrayList();
         for (Block b : blocks.values()) {
@@ -146,40 +154,51 @@ public class Tray {
         return moves;
     }
     
+    // This method applied a given move to a block and updates relevant data structures.
     private void moveBlock(int[] move) {
         // removing the block to be moved from the map so we can update its coords
         // and return it with an updated key
         Block b = blocks.remove(new Coord(move[0], move[1]));
         b.setRowColPos(move[2], move[3]);
         blocks.put(new Coord(move[2], move[3]), b);
-        // updating the tray
         if (isOk()) {
+            // update the tray with the last int[][] created by isOk
             tray = lastIsOk;
         }
         else {
+            // If moving the block creates an invalid tray, remove it
+            // and put back the original block.
+            // This should never be reachable because the move generation should
+            // not ever generate invalid moves.
             blocks.remove(new Coord(move[2], move[3]));
+            b.setRowColPos(move[0], move[1]);
+            blocks.put(new Coord(move[0], move[1]), b);
         }
     }
     
-    // this method checks if the tray satisfies a given goal, ie the blocks in
-    // the goal tray are in the correct configuration in the game tray
-    // this does NOT check if two trays are equal
+    // This method checks if the tray satisfies a given goal, ie the blocks in
+    // the goal tray are in the correct configuration in the game tray.
+    // This does NOT check if two trays are equal.
     public boolean checkGoal(Tray goal) {
-        // go thru this.blocks and then go thru goal and see if each block in goal matches a block in this
+        // Go through blocks in goal
         for (Block g : goal.blocks.values()) {
             Coord key = new Coord(g.getRowPos(), g.getColPos());
+            // get the block at the goal block's position- if there isn't one, it'll be null.
             Block compBlock = this.blocks.get(key);
+            // if the block at the goal block's position doesn't equal the goal block,
+            // the tray doesn't match the goal so return false.
             if (!g.equals(compBlock)) {
                 return false;
             }
         }
+        // if all the goal blocks have equal blocks in the tray, return true.
         return true;
     }
 
     // Looks at the current block map of the tray and checks if there is overlap 
     // by creating a 2d array of 0s and attempting to add blocks as 1s - if there 
     // is more than one 1 in a space, the configuration is invalid.
-    // if no blocks overlap, lastIsOk is set to the new 2d array to be used to update
+    // If no blocks overlap, lastIsOk is set to the new 2d array to be used to update
     // the tray's 2d array in other methods.
     public boolean isOk(){
         int[][] newTray = new int[rows][cols];

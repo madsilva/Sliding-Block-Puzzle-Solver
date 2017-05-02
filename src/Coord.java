@@ -3,6 +3,12 @@
  * @author madsilva
  * @author jgeati
  */
+
+/*
+This class is used to store (row,col) coordinate pairs so that they can be used
+as keys in a HashMap. 
+*/
+
 public class Coord {
     private int row, col;
 

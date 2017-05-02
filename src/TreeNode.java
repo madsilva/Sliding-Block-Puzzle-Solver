@@ -5,6 +5,11 @@ import java.util.ArrayList;
  * @author madsilva
  * @author jgeati
  */
+
+/*
+This class is used to store a piece of data in a node and all the children of that node.
+*/
+
 public class TreeNode<T> {
     private T data;
     private ArrayList<TreeNode> children;

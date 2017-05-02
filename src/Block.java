@@ -5,6 +5,12 @@ import java.util.ArrayList;
  * @author madsilva
  * @author jgeati
  */
+
+/*
+This class is used to store and manipulate data for an induvidual block in a game tray.
+Blocks are represented as (rows, columns, top left row coordinate, top left column coordinate).
+*/
+
 public class Block {
     private final int rows, cols;
     private int rowpos, colpos;
@@ -40,6 +46,7 @@ public class Block {
         return moves;
     }
 
+    // Returns whether the block can move 1 space left based on the given tray.
     private boolean checkMoveLeft(int[][] tray){
         // returns false if in the leftmost column
         if (colpos == 0) return false;
@@ -51,6 +58,7 @@ public class Block {
         return true;
     }
 
+    // Returns whether the block can move 1 space right based on the given tray.
     private boolean checkMoveRight(int[][] tray){
         // returns false if in the rightmost column
         if (colpos + cols >= tray[0].length) return false;
@@ -62,6 +70,7 @@ public class Block {
         return true;
     }
 
+    // Returns whether the block can move 1 space up based on the given tray.
     private boolean checkMoveUp(int[][] tray){
         // returns false if in the highest row
         if (rowpos == 0) return false;
@@ -73,6 +82,7 @@ public class Block {
         return true;
     }
 
+    // Returns whether the block can move 1 space down based on the given tray.
     private boolean checkMoveDown(int[][] tray){
         // returns false if in the lowest row
         if (rowpos + rows >= tray.length) return false;
